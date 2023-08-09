@@ -42,7 +42,7 @@ source:
 
 build:
   skip: true  # [not linux]
-  number: 0
+  number: 1
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
