@@ -41,7 +41,7 @@ source:
     folder: third_party/thrust/dependencies/cub
 
 build:
-  skip: true  # [not linux]
+  skip: true  # [win]
   number: 1
   skip: true  # [py<39]
   rpaths:
