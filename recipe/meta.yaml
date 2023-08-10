@@ -43,6 +43,7 @@ source:
 build:
   skip: true  # [not linux]
   number: 1
+  skip: true  # [py<39]
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
@@ -76,7 +77,7 @@ requirements:
     - metis ==5.1.1
     - nanoflann
     - parallel-hashmap
-    - python >=3.9
+    - python
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
@@ -87,7 +88,7 @@ requirements:
     - networkx
     - numpy
     - psutil
-    - python >=3.9
+    - python
     - pytorch =*=*{{ torch_proc_type }}*
     - requests
     - scipy
