@@ -11,6 +11,7 @@ source:
     sha256: 71c8ba7777ffdca37638bc796524d42c51006fad385967fa140235b60aac0252
     patches:
       - conda-build.patch
+      - fix_clang_errors.patch
 
   - url: https://github.com/pytorch/tensorpipe/archive/6042f1a4cbce8eef997f11ed0012de137b317361.tar.gz
     sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
