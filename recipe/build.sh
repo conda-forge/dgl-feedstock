@@ -13,7 +13,8 @@ if [ ${cuda_compiler_version} != "None" ]; then
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
-  CXXFLAGS="${CXXFLAGS} -std=c++17"
+  CFLAGS="${CFLAGS} -std=c17 "
+  CXXFLAGS="${CXXFLAGS} -std=c++17 "
 fi
 
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
