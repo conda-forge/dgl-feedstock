@@ -3,17 +3,19 @@ set -euxo pipefail
 
 rm -rf build || true
 
+
 if [ ${cuda_compiler_version} != "None" ]; then
   CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
+  # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
+  export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
+  export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
+  CXXFLAGS="${CXXFLAGS} --std=c++17 "
 fi
 
-# Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
-export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
-export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
 if [[ ${cuda_compiler_version} != "None" ]]; then
     if [[ ${cuda_compiler_version} == 9.0* ]]; then
