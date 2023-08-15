@@ -17,6 +17,13 @@ else
   CXXFLAGS="${CXXFLAGS} -std=c++17 "
 fi
 
+# SEE PR #5 (can't build to do aligned_alloc missing on osx)
+if [[ $(uname) == "Darwin" ]]; then
+	USE_LIBXSMM=OFF
+else
+	USE_LIBXSMM=ON
+fi
+
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
 if [[ ${cuda_compiler_version} != "None" ]]; then
     if [[ ${cuda_compiler_version} == 9.0* ]]; then
@@ -50,7 +57,7 @@ cmake -DUSE_CUDA=${USE_CUDA} \
   -DEXTERNAL_NANOFLANN_PATH=${BUILD_PREFIX}/include \
   -DEXTERNAL_METIS_PATH=${BUILD_PREFIX}/include \
   -DEXTERNAL_METIS_LIB_PATH=${BUILD_PREFIX}/lib \
-  -DUSE_LIBXSMM=OFF \
+  -DUSE_LIBXSMM=${USE_LIBXSMM} \
   -DUSE_OPENMP=ON \
   ${CMAKE_FLAGS} \
   ${CUDA_CMAKE_OPTIONS} \
