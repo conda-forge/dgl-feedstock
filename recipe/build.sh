@@ -8,8 +8,7 @@ if [ ${cuda_compiler_version} != "None" ]; then
   CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
-  export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
-  #export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
+  CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
@@ -63,7 +62,7 @@ cmake -DUSE_CUDA=${USE_CUDA} \
   ${CUDA_CMAKE_OPTIONS} \
   ${SRC_DIR}
 
-make -j1
+make -j$(nproc)
 cd ../python
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
 
