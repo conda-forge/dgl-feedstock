@@ -8,13 +8,13 @@ if [ ${cuda_compiler_version} != "None" ]; then
   CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
-  export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
-  export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
+  #export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
+  #export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
-  CFLAGS="${CFLAGS} -std=c17 "
-  CXXFLAGS="${CXXFLAGS} -std=c++17 "
+  CFLAGS="${CFLAGS} -std=c17"
+  CXXFLAGS="${CXXFLAGS} -std=c++17"
 fi
 
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
