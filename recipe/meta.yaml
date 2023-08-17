@@ -12,6 +12,7 @@ source:
     patches:
       - conda-build.patch
       - fix_clang_errors.patch
+      - fix_libdgl_sparse_pytorch_location_logic.patch
 
   - url: https://github.com/pytorch/tensorpipe/archive/6042f1a4cbce8eef997f11ed0012de137b317361.tar.gz
     sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
