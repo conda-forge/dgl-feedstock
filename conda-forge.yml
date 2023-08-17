@@ -1,7 +1,6 @@
 azure:
   free_disk_space: true
   store_build_artifacts: true
-  swapfile_size: 10GiB
 conda_build:
   error_overlinking: true
 conda_forge_output_validation: true
