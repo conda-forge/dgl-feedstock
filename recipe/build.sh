@@ -3,17 +3,26 @@ set -euxo pipefail
 
 rm -rf build || true
 
+
 if [ ${cuda_compiler_version} != "None" ]; then
   CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
+  # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
+  CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
+  CFLAGS="${CFLAGS} -std=c17"
+  CXXFLAGS="${CXXFLAGS} -std=c++17"
 fi
 
-# Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
-export CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
-export CFLAGS="$(echo $CFLAGS | sed -e 's/ -mtune=[^ ]*//')"
+# SEE PR #5 (can't build to do aligned_alloc missing on osx)
+if [[ $(uname) == "Darwin" ]]; then
+	USE_LIBXSMM=OFF
+else
+	USE_LIBXSMM=ON
+fi
+
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
 if [[ ${cuda_compiler_version} != "None" ]]; then
     if [[ ${cuda_compiler_version} == 9.0* ]]; then
@@ -47,16 +56,16 @@ cmake -DUSE_CUDA=${USE_CUDA} \
   -DEXTERNAL_NANOFLANN_PATH=${BUILD_PREFIX}/include \
   -DEXTERNAL_METIS_PATH=${BUILD_PREFIX}/include \
   -DEXTERNAL_METIS_LIB_PATH=${BUILD_PREFIX}/lib \
-  -DUSE_LIBXSMM=ON \
+  -DUSE_LIBXSMM=${USE_LIBXSMM} \
   -DUSE_OPENMP=ON \
   ${CMAKE_FLAGS} \
   ${CUDA_CMAKE_OPTIONS} \
   ${SRC_DIR}
 
-make -j1
+make -j$(nproc)
 cd ../python
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
 
 # Fix some overlinking warnings/errors
-ln -s $SP_DIR/dgl/libdgl.so $PREFIX/lib
+ln -s $SP_DIR/dgl/libdgl$SHLIB_EXT $PREFIX/lib
 
