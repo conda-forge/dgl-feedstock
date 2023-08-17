@@ -101,6 +101,7 @@ test:
     - pip
   imports:
     - dgl
+    - dgl.sparse
   commands:
     - pip check
 
