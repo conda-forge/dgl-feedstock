@@ -1,11 +1,12 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 96adfd2b..c532449a 100644
+index 4fbb1b22..9be4373f 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -37,6 +37,29 @@ dgl_option(BUILD_TORCH "Build the PyTorch plugin" OFF)
+@@ -36,6 +36,30 @@ dgl_option(BUILD_TORCH "Build the PyTorch plugin" OFF)
  dgl_option(BUILD_SPARSE "Build DGL sparse library" ON)
  dgl_option(TORCH_PYTHON_INTERPS "Python interpreter used to build tensoradapter and DGL sparse library" python3)
  
++
 +
 +dgl_option(EXTERNAL_DLPACK_PATH "Path to external dlpack" OFF)
 +dgl_option(EXTERNAL_DMLC_PATH "Path to external dmlc-core" OFF)
@@ -32,15 +33,15 @@ index 96adfd2b..c532449a 100644
  # Set debug compile option for gdb, only happens when -DCMAKE_BUILD_TYPE=DEBUG
  if (NOT MSVC)
    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -O0 -g3 -ggdb")
-@@ -172,52 +195,111 @@ set_property(TARGET dgl PROPERTY CXX_STANDARD 14)
+@@ -176,51 +200,110 @@ set_property(TARGET dgl PROPERTY CXX_STANDARD 14)
  
  # include directories
  target_include_directories(dgl PRIVATE "include")
 -target_include_directories(dgl PRIVATE "third_party/dlpack/include")
 -target_include_directories(dgl PRIVATE "third_party/dmlc-core/include")
 -target_include_directories(dgl PRIVATE "third_party/phmap/")
--target_include_directories(dgl PRIVATE "third_party/xbyak/")
 -target_include_directories(dgl PRIVATE "third_party/METIS/include/")
++
 +
 +
 +# check for conda includes
@@ -108,10 +109,7 @@ index 96adfd2b..c532449a 100644
 +  target_include_directories(dgl PRIVATE "third_party/phmap")
 +endif(EXTERNAL_PHMAP_PATH)
 +
-+# this was removed as an explicit dependency in 1.1
-+# target_include_directories(dgl PRIVATE "third_party/xbyak/")
 +
-+# these header only libs are always vendored 
  target_include_directories(dgl PRIVATE "tensoradapter/include")
 -target_include_directories(dgl PRIVATE "third_party/nanoflann/include")
 -target_include_directories(dgl PRIVATE "third_party/libxsmm/include")
@@ -124,11 +122,6 @@ index 96adfd2b..c532449a 100644
 -add_subdirectory("third_party/dmlc-core")
 -list(APPEND DGL_LINKER_LIBS dmlc)
 -set(GOOGLE_TEST 0) # Turn off dmlc-core test
-+if(EXTERNAL_NANOFLANN_PATH)
-+  include_directories(SYSTEM ${EXTERNAL_NANOFLANN_PATH})
-+else(EXTERNAL_NANOFLANN_PATH)
-+  target_include_directories(dgl PRIVATE "third_party/nanoflann/include")
-+endif(EXTERNAL_NANOFLANN_PATH)
  
 -# Compile METIS
 -if(NOT MSVC)
@@ -139,15 +132,21 @@ index 96adfd2b..c532449a 100644
 -  add_subdirectory("third_party/METIS/libmetis/")
 -  list(APPEND DGL_LINKER_LIBS metis)
 -endif(NOT MSVC)
-+if (USE_LIBXSMM)
-+  target_include_directories(dgl PRIVATE "third_party/libxsmm/include")
-+endif()
++if(EXTERNAL_NANOFLANN_PATH)
++  include_directories(SYSTEM ${EXTERNAL_NANOFLANN_PATH})
++else(EXTERNAL_NANOFLANN_PATH)
++  target_include_directories(dgl PRIVATE "third_party/nanoflann/include")
++endif(EXTERNAL_NANOFLANN_PATH)
  
 -# Compile LIBXSMM
 -if((NOT MSVC) AND USE_LIBXSMM)
 -  set(LIBXSMM_COMPILER "${CMAKE_C_COMPILER}")
 -  if (APPLE)
 -    set(LIBXSMM_COMPILER "${CMAKE_C_COMPILER} -isysroot ${CMAKE_OSX_SYSROOT}")
++if (USE_LIBXSMM)
++  target_include_directories(dgl PRIVATE "third_party/libxsmm/include")
++endif()
++
 +if (EXTERNAL_METIS_PATH)
 +  find_package(METIS REQUIRED)
 +  if (NOT METIS_FOUND)
@@ -167,7 +166,7 @@ index 96adfd2b..c532449a 100644
 -                      )
 -  endif(REBUILD_LIBXSMM)
 -  add_dependencies(dgl libxsmm)
--  list(APPEND DGL_LINKER_LIBS -L${CMAKE_SOURCE_DIR}/third_party/libxsmm/lib/ xsmm)
+-  list(APPEND DGL_LINKER_LIBS -L${CMAKE_SOURCE_DIR}/third_party/libxsmm/lib/ xsmm.a)
 -endif((NOT MSVC) AND USE_LIBXSMM)
 +else(EXTERNAL_METIS_PATH)
 +  target_include_directories(dgl PRIVATE "third_party/METIS/include")
@@ -184,20 +183,20 @@ index 96adfd2b..c532449a 100644
  
  if(NOT MSVC)
    # Only build tensorpipe on linux
-@@ -375,6 +457,7 @@ if(BUILD_SPARSE)
+@@ -279,6 +362,7 @@ if(BUILD_TORCH)
        CMAKE_COMMAND=${CMAKE_CMD}
        CUDA_TOOLKIT_ROOT_DIR=${CUDA_TOOLKIT_ROOT_DIR}
        USE_CUDA=${USE_CUDA}
 +      EXTERNAL_DMLC_LIB_PATH=${EXTERNAL_DMLC_LIB_PATH}
-       BINDIR=${CMAKE_CURRENT_BINARY_DIR}
-       INCLUDEDIR="${DGL_INCLUDE_DIRS}"
-       CFLAGS=${CMAKE_C_FLAGS}
+       BINDIR=${BINDIR}
+       cmd /e:on /c ${BUILD_SCRIPT} ${TORCH_PYTHON_INTERPS}
+       DEPENDS ${BUILD_SCRIPT}
 diff --git a/cmake/modules/FindMETIS.cmake b/cmake/modules/FindMETIS.cmake
 new file mode 100644
-index 00000000..67182a58
+index 00000000..3fdd9a39
 --- /dev/null
 +++ b/cmake/modules/FindMETIS.cmake
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,27 @@
 +# Find the METIS includes and library
 +#
 +# This module defines
@@ -225,12 +224,12 @@ index 00000000..67182a58
 +
 +FIND_PACKAGE_HANDLE_STANDARD_ARGS(METIS DEFAULT_MSG METIS_INCLUDE_DIR METIS_LIBRARIES)
 +MARK_AS_ADVANCED(METIS_LIBRARIES METIS_INCLUDE_DIR)
-+
+\ No newline at end of file
 diff --git a/dgl_sparse/CMakeLists.txt b/dgl_sparse/CMakeLists.txt
-index d541c2f8..73e97896 100644
+index d541c2f8..c5ae3b03 100644
 --- a/dgl_sparse/CMakeLists.txt
 +++ b/dgl_sparse/CMakeLists.txt
-@@ -58,5 +58,18 @@ if(DEFINED MKL_LIBRARIES)
+@@ -58,5 +58,17 @@ if(DEFINED MKL_LIBRARIES)
    target_link_directories(${LIB_DGL_SPARSE_NAME} PRIVATE ${MKL_ROOT}/lib/${MKL_ARCH})
  endif()
  
@@ -248,7 +247,6 @@ index d541c2f8..73e97896 100644
 +else (EXTERNAL_DMLC_LIB_PATH)
 +   target_link_libraries(${LIB_DGL_SPARSE_NAME} dmlc dgl)
 +endif()
-+
  set(GOOGLE_TEST 0) # Turn off dmlc-core test
 diff --git a/dgl_sparse/build.sh b/dgl_sparse/build.sh
 index 2f86a235..f8b46703 100644
@@ -264,7 +262,7 @@ index 2f86a235..f8b46703 100644
  CMAKE_FLAGS="$CMAKE_FLAGS -DDGL_INCLUDE_DIRS=${INCLUDEDIR// /;} -DDGL_BUILD_DIR=$BINDIR"
  echo $CMAKE_FLAGS
 diff --git a/src/array/cpu/spmm_blocking_libxsmm.h b/src/array/cpu/spmm_blocking_libxsmm.h
-index 5d1ea5d6..6051ce9b 100644
+index f4038d8f..de3579fb 100644
 --- a/src/array/cpu/spmm_blocking_libxsmm.h
 +++ b/src/array/cpu/spmm_blocking_libxsmm.h
 @@ -18,7 +18,7 @@
