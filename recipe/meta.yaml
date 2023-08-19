@@ -18,7 +18,7 @@ source:
     sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
     folder: third_party/tensorpipe
 
-  - url: //github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
+  - url: https://github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
     sha256: c66c8a024bb31c6134347a0d5630f6275c0bfe94d4144504d45099412fd7a054
     folder: third_party/tensorpipe/third_party/libuv
 
