@@ -18,7 +18,7 @@ source:
     sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
     folder: third_party/tensorpipe
 
-  - url: https://github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
+  - url: //github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
     sha256: c66c8a024bb31c6134347a0d5630f6275c0bfe94d4144504d45099412fd7a054
     folder: third_party/tensorpipe/third_party/libuv
 
@@ -30,8 +30,8 @@ source:
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
     folder: third_party/pcg
 
-  - url: https://github.com/libxsmm/libxsmm/archive/fa687556130b6298430f1c0555a14cf79ab6101c.tar.gz
-    sha256: 71ce4d9c8fc8157c7635cddc74510219e0b78ed97c12d4fbc18e38aa1e96f88a
+  - url: https://github.com/libxsmm/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
+    sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
     folder: third_party/libxsmm
 
   - url: https://github.com/NVIDIA/thrust/archive/1.17.0.tar.gz
