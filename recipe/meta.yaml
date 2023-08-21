@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "1.1.0" %}
+{% set version = "1.1.1" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/{{ version }}.tar.gz
-    sha256: 71c8ba7777ffdca37638bc796524d42c51006fad385967fa140235b60aac0252
+    sha256: 076026a7818f2396056252269d7960c561840bb0fe89494e11f8d6c524891c49
     patches:
       - conda-build.patch
       - fix_clang_errors.patch
@@ -30,8 +30,8 @@ source:
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
     folder: third_party/pcg
 
-  - url: https://github.com/libxsmm/libxsmm/archive/fa687556130b6298430f1c0555a14cf79ab6101c.tar.gz
-    sha256: 71ce4d9c8fc8157c7635cddc74510219e0b78ed97c12d4fbc18e38aa1e96f88a
+  - url: https://github.com/libxsmm/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
+    sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
     folder: third_party/libxsmm
 
   - url: https://github.com/NVIDIA/thrust/archive/1.17.0.tar.gz
@@ -44,7 +44,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 1
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
