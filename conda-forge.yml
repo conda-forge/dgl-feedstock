@@ -1,6 +1,7 @@
 azure:
   free_disk_space: True
-  swapfile_size: 10GiB
+  settings_linux:
+    swapfile_size: 11GiB
 github:
   branch_name: main
   tooling_branch_name: main
