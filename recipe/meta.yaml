@@ -119,7 +119,8 @@ about:
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
     - third_party/thrust/LICENSE
-    - third_party/thrust/dependencies/cub/LICENSE.TXT 
+    - third_party/thrust/dependencies/cub/LICENSE.TXT
+    - recipe/HugeCTR_gpu_cache_license.txt
   summary: A deep graph library
   description: |
     DGL is an easy-to-use, high performance and scalable Python package for deep
