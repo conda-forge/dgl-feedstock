@@ -1,4 +1,6 @@
 azure:
+  settings_linux:
+    swapfile_size: 10GiB
   free_disk_space: true
   store_build_artifacts: true
 conda_build:
