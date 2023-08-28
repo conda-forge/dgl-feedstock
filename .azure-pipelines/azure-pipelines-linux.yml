@@ -38,7 +38,6 @@ jobs:
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
         SHORT_CONFIG: linux_64_c_compiler_version12cuda_c_h6dd2ecf2e7
-  swapfile_size: 10GiB
   timeoutInMinutes: 360
 
   steps:
