@@ -86,6 +86,7 @@ requirements:
   run:
     # Currently tests fail with other BLASes
     # Pin to a known working BLAS.
+    - libuv
     - liblapack =*=*mkl
     - networkx
     - numpy
