@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "1.1.1" %}
+{% set version = "1.1.2" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/{{ version }}.tar.gz
-    sha256: 076026a7818f2396056252269d7960c561840bb0fe89494e11f8d6c524891c49
+    sha256: 5b7ef998d63946e8af29507318507915bc86a77d52d241414ef78eaca74a641a
     patches:
       - conda-build.patch
       - fix_clang_errors.patch
@@ -75,6 +75,7 @@ requirements:
     - libcblas
     - liblapack
     - liblapacke
+    - libuv ==1.41.1
     - metis ==5.1.1
     - nanoflann
     - parallel-hashmap
@@ -85,6 +86,7 @@ requirements:
   run:
     # Currently tests fail with other BLASes
     # Pin to a known working BLAS.
+    - libuv
     - liblapack =*=*mkl
     - networkx
     - numpy
@@ -119,7 +121,8 @@ about:
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
     - third_party/thrust/LICENSE
-    - third_party/thrust/dependencies/cub/LICENSE.TXT 
+    - third_party/thrust/dependencies/cub/LICENSE.TXT
+    - HugeCTR_gpu_cache_license.txt
   summary: A deep graph library
   description: |
     DGL is an easy-to-use, high performance and scalable Python package for deep
