@@ -44,7 +44,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 0
+  number: 1
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
@@ -77,17 +77,14 @@ requirements:
     - liblapacke
     - libuv ==1.41.1
     - metis ==5.1.1
-    - nanoflann
+    - nanoflann <=1.4.2
     - parallel-hashmap
     - python
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
   run:
-    # Currently tests fail with other BLASes
-    # Pin to a known working BLAS.
     - libuv
-    - liblapack =*=*mkl
     - networkx
     - numpy
     - psutil
