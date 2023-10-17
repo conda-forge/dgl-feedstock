@@ -77,7 +77,7 @@ requirements:
     - liblapacke
     - libuv ==1.41.1
     - metis ==5.1.1
-    - nanoflann
+    - nanoflann <=1.4.2
     - parallel-hashmap
     - python
     - pytorch  # duplicate dep to pick up conda-forge pinnings
