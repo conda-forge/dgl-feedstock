@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "1.1.2" %}
+{% set version = "1.1.3" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -7,8 +7,8 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://github.com/dmlc/dgl/archive/{{ version }}.tar.gz
-    sha256: 5b7ef998d63946e8af29507318507915bc86a77d52d241414ef78eaca74a641a
+  - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
+    sha256: c45021d77ff2b1fed814a8b91260671167fb4e42b7d5fab2d37faa74ae1dc5b4
     patches:
       - conda-build.patch
       - fix_clang_errors.patch
@@ -44,7 +44,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 2
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
@@ -58,7 +58,7 @@ build:
 requirements:
   build:
     - cmake
-    - git 
+    - git
     - libgomp      # [linux]
     - llvm-openmp  # [osx]
     - make
@@ -108,7 +108,7 @@ test:
 about:
   home: https://github.com/dmlc/dgl
   license: Apache-2.0
-  license_file: 
+  license_file:
     - LICENSE
     - third_party/tensorpipe/LICENSE.txt
     - third_party/tensorpipe/third_party/libuv/LICENSE
