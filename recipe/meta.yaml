@@ -44,7 +44,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 2
+  number: 3
   rpaths:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
