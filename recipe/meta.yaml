@@ -34,13 +34,9 @@ source:
     sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
     folder: third_party/libxsmm
 
-  - url: https://github.com/NVIDIA/thrust/archive/1.17.0.tar.gz
-    sha256: b02aca5d2325e9128ed9d46785b8e72366f758b873b95001f905f22afcf31bbf
-    folder: third_party/thrust
-
-  - url: https://github.com/NVIDIA/cub/archive/1.17.0.tar.gz
-    sha256: 16fd4860ae3196bc3eb08bf5754fa2a9697951ddae36dc9721e6614388893618
-    folder: third_party/thrust/dependencies/cub
+  - url: https://github.com/NVIDIA/cccl/archive/4d5c181cb4e67b14e7d1fdeb45cf0104119bfb09.tar.gz
+    sha256: 59bcccb6d7c054323fafb76ff0932c33ed9c3fac969c3eef2a521ad0980639fc
+    folder: third_party/cccl
 
 build:
   skip: true  # [win or py<39]
@@ -117,8 +113,7 @@ about:
     - third_party/pcg/LICENSE-APACHE.txt
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
-    - third_party/thrust/LICENSE
-    - third_party/thrust/dependencies/cub/LICENSE.TXT
+    - third_party/cccl/LICENSE
     - HugeCTR_gpu_cache_license.txt
   summary: A deep graph library
   description: |
