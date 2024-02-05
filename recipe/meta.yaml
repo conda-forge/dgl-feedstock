@@ -66,13 +66,13 @@ requirements:
     - cython <3
     - dlpack ==0.7
     - dmlc ==0.5
-    - gklib ==5.1.1
+    - gklib ==5.1.1  # https://github.com/conda-forge/conda-forge-pinning-feedstock/pull/5396#issuecomment-1900607226
     - libblas
     - libcblas
     - liblapack
     - liblapacke
-    - libuv ==1.41.1
-    - metis ==5.1.1
+    - libuv
+    - metis ==5.1.1  # https://github.com/conda-forge/conda-forge-pinning-feedstock/pull/5396#issuecomment-1900607226
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
