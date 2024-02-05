@@ -43,7 +43,7 @@ build:
   number: 0
   rpaths:
     - lib/
-      # PyTorch libs are in site-packages intead of with other shared objects
+      # PyTorch libs are in site-packages instead of with other shared objects
     - {{ SP_DIR }}/torch/lib/
   missing_dso_whitelist:
     - '*/libcuda.*'  # [linux64]
@@ -76,6 +76,7 @@ requirements:
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
+    - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
@@ -90,7 +91,6 @@ requirements:
     - scipy
     - tensorflow
     - tqdm
-
 
 test:
   requires:
