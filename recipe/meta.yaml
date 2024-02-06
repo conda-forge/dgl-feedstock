@@ -58,7 +58,6 @@ requirements:
     - libcblas
     - liblapack
     - liblapacke
-    - libuv
     - metis ==5.1.1
     - nanoflann <=1.4.2
     - parallel-hashmap
@@ -68,7 +67,6 @@ requirements:
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
   run:
-    - libuv
     - networkx
     - numpy
     - psutil
