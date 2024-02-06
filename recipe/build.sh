@@ -14,7 +14,7 @@ else
   USE_CUDA=OFF
   CFLAGS="${CFLAGS} -std=c17"
   CXXFLAGS="${CXXFLAGS} -std=c++17"
-  NJOBS="-j$(nproc)"
+  NJOBS="-j$(nproc || sysctl -n hw.logicalcpu)"
 fi
 
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
