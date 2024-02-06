@@ -10,21 +10,8 @@ source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
     sha256: a728fe7167da5ae5eb6ff9f455938c802acb1b477924eb6abb124aba61099a6c
     patches:
-      - conda-build.patch
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
-
-  - url: https://github.com/pytorch/tensorpipe/archive/6042f1a4cbce8eef997f11ed0012de137b317361.tar.gz
-    sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
-    folder: third_party/tensorpipe
-
-  - url: https://github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
-    sha256: c66c8a024bb31c6134347a0d5630f6275c0bfe94d4144504d45099412fd7a054
-    folder: third_party/tensorpipe/third_party/libuv
-
-  - url: https://github.com/google/libnop/archive/910b55815be16109f04f4180e9adee14fb4ce281.tar.gz
-    sha256: ec3604671f8ea11aed9588825f9098057ebfef7a8908e97459835150eea9f63a
-    folder: third_party/tensorpipe/third_party/libnop
 
   - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
@@ -33,14 +20,10 @@ source:
   - url: https://github.com/libxsmm/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
     sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
     folder: third_party/libxsmm
-
-  - url: https://github.com/NVIDIA/thrust/archive/1.17.0.tar.gz
-    sha256: b02aca5d2325e9128ed9d46785b8e72366f758b873b95001f905f22afcf31bbf
-    folder: third_party/thrust
-
-  - url: https://github.com/NVIDIA/cub/archive/1.17.0.tar.gz
-    sha256: 16fd4860ae3196bc3eb08bf5754fa2a9697951ddae36dc9721e6614388893618
-    folder: third_party/thrust/dependencies/cub
+  
+  - url: https://github.com/NVIDIA/cccl/archive/4d5c181cb4e67b14e7d1fdeb45cf0104119bfb09.tar.gz
+    sha256: 59bcccb6d7c054323fafb76ff0932c33ed9c3fac969c3eef2a521ad0980639fc
+    folder: third_party/cccl
 
 build:
   skip: true  # [win or py<39]
@@ -75,11 +58,12 @@ requirements:
     - libcblas
     - liblapack
     - liblapacke
-    - libuv ==1.41.1
+    - libuv
     - metis ==5.1.1
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
+    - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
@@ -95,7 +79,6 @@ requirements:
     - tensorflow
     - tqdm
 
-
 test:
   requires:
     - pip
@@ -110,15 +93,10 @@ about:
   license: Apache-2.0
   license_file:
     - LICENSE
-    - third_party/tensorpipe/LICENSE.txt
-    - third_party/tensorpipe/third_party/libuv/LICENSE
-    - third_party/tensorpipe/third_party/libuv/LICENSE
-    - third_party/tensorpipe/third_party/libnop/LICENSE
     - third_party/pcg/LICENSE-APACHE.txt
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
-    - third_party/thrust/LICENSE
-    - third_party/thrust/dependencies/cub/LICENSE.TXT
+    - third_party/cccl/LICENSE
     - HugeCTR_gpu_cache_license.txt
   summary: A deep graph library
   description: |
