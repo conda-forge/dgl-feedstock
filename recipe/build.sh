@@ -3,17 +3,18 @@ set -euxo pipefail
 
 rm -rf build || true
 
-
 if [ ${cuda_compiler_version} != "None" ]; then
   CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
   CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
+  NJOBS=""  # disable parallel jobs to avoid OOM
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
   CFLAGS="${CFLAGS} -std=c17"
   CXXFLAGS="${CXXFLAGS} -std=c++17"
+  NJOBS="-j$(nproc)"
 fi
 
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
@@ -70,7 +71,7 @@ cmake -DUSE_CUDA=${USE_CUDA} \
   ${CUDA_CMAKE_OPTIONS} \
   ${SRC_DIR}
 
-make -j$(nproc)
+make ${NJOBS}
 cd ../python
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
 
