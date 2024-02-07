@@ -40,7 +40,7 @@ build:
 
 requirements:
   build:
-    - cmake
+    - cmake >=3.20
     - git
     - libgomp      # [linux]
     - llvm-openmp  # [osx]

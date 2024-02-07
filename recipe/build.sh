@@ -52,6 +52,7 @@ if [[ ${cuda_compiler_version} != "None" ]]; then
         echo "unsupported cuda version. edit build.sh"
         exit 1
     fi
+    export CUDAARCHS="${TORCH_CUDA_ARCH_LIST}"
 fi
 echo $CONDA_PREFIX
 
