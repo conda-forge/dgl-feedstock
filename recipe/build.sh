@@ -63,9 +63,6 @@ else
 fi
 
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
-if [[ ${cuda_compiler_version} != "None" ]]; then
-
-fi
 echo $CONDA_PREFIX
 
 mkdir build
