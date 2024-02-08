@@ -4,11 +4,46 @@ set -euxo pipefail
 rm -rf build || true
 
 if [ ${cuda_compiler_version} != "None" ]; then
-  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
   CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
   NJOBS=""  # disable parallel jobs to avoid OOM
+  if [[ ${cuda_compiler_version} == 9.0* ]]; then
+      export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;7.0+PTX"
+      export CUDAARCHS="35;50;60;70"
+  elif [[ ${cuda_compiler_version} == 9.2* ]]; then
+      export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0+PTX"
+      export CUDAARCHS="35;50;60;61;70"
+  elif [[ ${cuda_compiler_version} == 10.* ]]; then
+      export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5+PTX"
+      export CUDAARCHS="35;50;60;61;70;75"
+  elif [[ ${cuda_compiler_version} == 11.0* ]]; then
+      export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0+PTX"
+      export CUDAARCHS="35;50;60;61;70;75;80"
+  elif [[ ${cuda_compiler_version} == 11.1 ]]; then
+      export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
+      export CUDAARCHS="35;50;60;61;70;75;80;86"
+  elif [[ ${cuda_compiler_version} == 11.2 ]]; then
+      # export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
+      export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6+PTX"
+      export CUDAARCHS="70;75;80;86"
+  elif [[ ${cuda_compiler_version} == 11.8 ]]; then
+      # export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9+PTX"
+      export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;8.9+PTX"
+      export CUDAARCHS="70;75;80;86;89"
+  elif [[ ${cuda_compiler_version} == 12.0 ]]; then
+      # export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
+      export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;8.9;9.0+PTX"
+      export CUDAARCHS="70;75;80;86;89;90"
+  else
+      echo "unsupported cuda version. edit build.sh"
+      exit 1
+  fi
+  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc"
+  CUDA_CMAKE_OPTIONS+=" -DCMAKE_CUDA_HOST_COMPILER=${CXX}"
+  CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_NAME=Manual "
+  CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_BIN=${CUDAARCHS}"
+  CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_PTX=${CUDAARCHS}"
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
@@ -29,37 +64,7 @@ fi
 
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
 if [[ ${cuda_compiler_version} != "None" ]]; then
-    if [[ ${cuda_compiler_version} == 9.0* ]]; then
-        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;7.0+PTX"
-        export CUDAARCHS="35;50;60;70"
-    elif [[ ${cuda_compiler_version} == 9.2* ]]; then
-        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0+PTX"
-        export CUDAARCHS="35;50;60;61;70"
-    elif [[ ${cuda_compiler_version} == 10.* ]]; then
-        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5+PTX"
-        export CUDAARCHS="35;50;60;61;70;75"
-    elif [[ ${cuda_compiler_version} == 11.0* ]]; then
-        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0+PTX"
-        export CUDAARCHS="35;50;60;61;70;75;80"
-    elif [[ ${cuda_compiler_version} == 11.1 ]]; then
-        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
-        export CUDAARCHS="35;50;60;61;70;75;80;86"
-    elif [[ ${cuda_compiler_version} == 11.2 ]]; then
-        # export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
-        export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6+PTX"
-        export CUDAARCHS="70;75;80;86"
-    elif [[ ${cuda_compiler_version} == 11.8 ]]; then
-        # export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9+PTX"
-        export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;8.9+PTX"
-        export CUDAARCHS="70;75;80;86;89"
-    elif [[ ${cuda_compiler_version} == 12.0 ]]; then
-        # export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
-        export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;8.9;9.0+PTX"
-        export CUDAARCHS="70;75;80;86;89;90"
-    else
-        echo "unsupported cuda version. edit build.sh"
-        exit 1
-    fi
+
 fi
 echo $CONDA_PREFIX
 
