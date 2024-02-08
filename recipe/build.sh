@@ -19,6 +19,9 @@ fi
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
 if [[ $(uname) == "Darwin" ]]; then
 	USE_LIBXSMM=OFF
+	# https://conda-forge.org/docs/maintainer/knowledge_base.html#newer-c-features-with-old-sdk
+	# error: 'shared_mutex' is unavailable: introduced in macOS 10.1
+	CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
 else
 	USE_LIBXSMM=ON
 fi
@@ -37,6 +40,10 @@ if [[ ${cuda_compiler_version} != "None" ]]; then
         export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
     elif [[ ${cuda_compiler_version} == 11.2 ]]; then
         export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6+PTX"
+    elif [[ ${cuda_compiler_version} == 11.8 ]]; then
+        export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9+PTX"
+    elif [[ ${cuda_compiler_version} == 12.0 ]]; then
+        export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
     else
         echo "unsupported cuda version. edit build.sh"
         exit 1
@@ -65,7 +72,3 @@ cmake -DUSE_CUDA=${USE_CUDA} \
 make -j$(nproc)
 cd ../python
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
-
-# Fix some overlinking warnings/errors
-ln -s $SP_DIR/dgl/libdgl$SHLIB_EXT $PREFIX/lib
-
