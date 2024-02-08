@@ -72,6 +72,3 @@ cmake -DUSE_CUDA=${USE_CUDA} \
 make -j$(nproc)
 cd ../python
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
-
-# Fix some overlinking warnings/errors
-ln -s $SP_DIR/dgl/libdgl$SHLIB_EXT $PREFIX/lib
