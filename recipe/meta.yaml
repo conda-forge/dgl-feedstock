@@ -32,6 +32,8 @@ build:
     - lib/
       # PyTorch libs are in site-packages intead of with other shared objects
     - {{ SP_DIR }}/torch/lib/
+      # Dgl libs are in site-packages intead of with other shared objects
+    - {{ SP_DIR }}/dgl/
   missing_dso_whitelist:
     - '*/libcuda.*'  # [linux64]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
