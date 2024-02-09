@@ -65,6 +65,7 @@ requirements:
     - {{ compiler('cuda') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ compiler('cxx') }}
   host:
+    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
     - cython <3
     - dlpack ==0.7
     - dmlc ==0.5
