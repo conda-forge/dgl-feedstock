@@ -5,7 +5,7 @@ rm -rf build || true
 
 
 if [ ${cuda_compiler_version} != "None" ]; then
-  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
+  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=$(which nvcc) -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
   CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
