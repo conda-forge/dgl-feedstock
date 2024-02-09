@@ -70,6 +70,8 @@ requirements:
     - dmlc ==0.5
     - gklib ==5.1.1  # https://github.com/conda-forge/conda-forge-pinning-feedstock/pull/5396#issuecomment-1900607226
     - libblas
+    - libcublas-dev      # [(cuda_compiler_version or "").startswith("12")]
+    - libcurand-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcblas
     - liblapack
     - liblapacke
