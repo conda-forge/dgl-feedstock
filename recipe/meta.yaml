@@ -39,7 +39,7 @@ source:
     folder: third_party/cccl
 
 build:
-  skip: true  # [not osx_arm64]
+  skip: true  # [not arm64]
   number: 2
   rpaths:
     - lib/
