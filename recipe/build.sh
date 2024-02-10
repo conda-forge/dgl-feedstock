@@ -39,11 +39,17 @@ if [ ${cuda_compiler_version} != "None" ]; then
       echo "unsupported cuda version. edit build.sh"
       exit 1
   fi
-  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc"
-  CUDA_CMAKE_OPTIONS+=" -DCMAKE_CUDA_HOST_COMPILER=${CXX}"
-  CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_NAME=Manual "
+  CUDA_CMAKE_OPTIONS="-DCUDA_ARCH_NAME=Manual"
   CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_BIN=${CUDAARCHS}"
   CUDA_CMAKE_OPTIONS+=" -DCUDA_ARCH_PTX=${CUDAARCHS}"
+
+  # Add NVVM's `bin` directory to the `$PATH`.
+  # This should fix an error finding `cicc`.
+  # ref: https://forums.developer.nvidia.com/t/when-i-arch-option-error-sh-cicc-command-not-found-takes-place/31753/2
+  # xref: https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
+  if [[ "${cuda_compiler_version}" == 12* ]]; then
+    export PATH="${PATH}:${BUILD_PREFIX}/nvvm/bin"
+  fi
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
@@ -62,7 +68,7 @@ else
 	USE_LIBXSMM=ON
 fi
 
-CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
+CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release"
 echo $CONDA_PREFIX
 
 mkdir build
