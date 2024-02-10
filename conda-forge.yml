@@ -1,7 +1,7 @@
 azure:
   free_disk_space: [docker, cache, apt]
   settings_linux:
-    swapfile_size: 10GiB
+    swapfile_size: 20GiB
 conda_build:
   error_overlinking: true
 conda_forge_output_validation: true
