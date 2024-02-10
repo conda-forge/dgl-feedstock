@@ -39,7 +39,7 @@ source:
     folder: third_party/cccl
 
 build:
-  skip: true  # [not arm64]
+  skip: true  # [win or py<39]
   number: 2
   rpaths:
     - lib/
