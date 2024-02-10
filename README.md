@@ -248,5 +248,7 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
+* [@frozenbugs](https://github.com/frozenbugs/)
 * [@hmacdope](https://github.com/hmacdope/)
 * [@mikemhenry](https://github.com/mikemhenry/)
+
