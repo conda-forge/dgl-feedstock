@@ -7,7 +7,7 @@ index f8b46703..2f3f8a8f 100644
  if [ $# -eq 0 ]; then
  	$CMAKE_COMMAND $CMAKE_FLAGS ..
 -	make -j
-+	make ${NJOBS:--j}
++	make
  	cp -v $CPSOURCE $BINDIR/dgl_sparse
  else
  	for PYTHON_INTERP in $@; do
@@ -16,7 +16,7 @@ index f8b46703..2f3f8a8f 100644
  		cd $TORCH_VER
  		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
 -		make -j
-+		make ${NJOBS:--j}
++		make
  		cp -v $CPSOURCE $BINDIR/dgl_sparse
  		cd ..
  	done
@@ -29,7 +29,7 @@ index 3906eda2..0a83fbca 100755
  if [ $# -eq 0 ]; then
    $CMAKE_COMMAND $CMAKE_FLAGS ..
 -  make -j
-+  make ${NJOBS:--j}
++  make
    cp -v $CPSOURCE $BINDIR/graphbolt
  else
    for PYTHON_INTERP in $@; do
@@ -38,7 +38,7 @@ index 3906eda2..0a83fbca 100755
      cd $TORCH_VER
      $CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
 -    make -j
-+    make ${NJOBS:--j}
++    make
      cp -v $CPSOURCE $BINDIR/graphbolt
      cd ..
    done
@@ -51,7 +51,7 @@ index 189a6344..56d679a5 100644
  if [ $# -eq 0 ]; then
  	$CMAKE_COMMAND $CMAKE_FLAGS ..
 -	make -j
-+	make ${NJOBS:--j}
++	make
  	cp -v $CPSOURCE $BINDIR/tensoradapter/pytorch
  else
  	for PYTHON_INTERP in $@; do
@@ -60,7 +60,7 @@ index 189a6344..56d679a5 100644
  		cd $TORCH_VER
  		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
 -		make -j
-+		make ${NJOBS:--j}
++		make
  		cp -v $CPSOURCE $BINDIR/tensoradapter/pytorch
  		cd ..
  	done
