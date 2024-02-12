@@ -7,7 +7,7 @@ if [ ${cuda_compiler_version} != "None" ]; then
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
   CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
-  NJOBS=""  # disable parallel jobs to avoid OOM
+  export NJOBS=""  # disable parallel jobs to avoid OOM
   if [[ ${cuda_compiler_version} == 9.0* ]]; then
       export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;7.0+PTX"
       export CUDAARCHS="35;50;60;70"
@@ -55,7 +55,7 @@ else
   USE_CUDA=OFF
   CFLAGS="${CFLAGS} -std=c17"
   CXXFLAGS="${CXXFLAGS} -std=c++17"
-  NJOBS="-j$(nproc || sysctl -n hw.logicalcpu)"
+  export NJOBS="-j$(nproc || sysctl -n hw.logicalcpu)"
 fi
 
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)

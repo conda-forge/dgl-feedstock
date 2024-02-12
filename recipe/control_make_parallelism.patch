@@ -1,0 +1,66 @@
+diff --git a/dgl_sparse/build.sh b/dgl_sparse/build.sh
+index f8b46703..2f3f8a8f 100644
+--- a/dgl_sparse/build.sh
++++ b/dgl_sparse/build.sh
+@@ -19,7 +19,7 @@ echo $CMAKE_FLAGS
+ 
+ if [ $# -eq 0 ]; then
+ 	$CMAKE_COMMAND $CMAKE_FLAGS ..
+-	make -j
++	make ${NJOBS:--j}
+ 	cp -v $CPSOURCE $BINDIR/dgl_sparse
+ else
+ 	for PYTHON_INTERP in $@; do
+@@ -27,7 +27,7 @@ else
+ 		mkdir -p $TORCH_VER
+ 		cd $TORCH_VER
+ 		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+-		make -j
++		make ${NJOBS:--j}
+ 		cp -v $CPSOURCE $BINDIR/dgl_sparse
+ 		cd ..
+ 	done
+diff --git a/graphbolt/build.sh b/graphbolt/build.sh
+index 3906eda2..0a83fbca 100755
+--- a/graphbolt/build.sh
++++ b/graphbolt/build.sh
+@@ -17,7 +17,7 @@ echo $CMAKE_FLAGS
+ 
+ if [ $# -eq 0 ]; then
+   $CMAKE_COMMAND $CMAKE_FLAGS ..
+-  make -j
++  make ${NJOBS:--j}
+   cp -v $CPSOURCE $BINDIR/graphbolt
+ else
+   for PYTHON_INTERP in $@; do
+@@ -25,7 +25,7 @@ else
+     mkdir -p $TORCH_VER
+     cd $TORCH_VER
+     $CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+-    make -j
++    make ${NJOBS:--j}
+     cp -v $CPSOURCE $BINDIR/graphbolt
+     cd ..
+   done
+diff --git a/tensoradapter/pytorch/build.sh b/tensoradapter/pytorch/build.sh
+index 189a6344..56d679a5 100644
+--- a/tensoradapter/pytorch/build.sh
++++ b/tensoradapter/pytorch/build.sh
+@@ -16,7 +16,7 @@ CMAKE_FLAGS="-DCUDA_TOOLKIT_ROOT_DIR=$CUDA_TOOLKIT_ROOT_DIR -DTORCH_CUDA_ARCH_LI
+ 
+ if [ $# -eq 0 ]; then
+ 	$CMAKE_COMMAND $CMAKE_FLAGS ..
+-	make -j
++	make ${NJOBS:--j}
+ 	cp -v $CPSOURCE $BINDIR/tensoradapter/pytorch
+ else
+ 	for PYTHON_INTERP in $@; do
+@@ -24,7 +24,7 @@ else
+ 		mkdir -p $TORCH_VER
+ 		cd $TORCH_VER
+ 		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+-		make -j
++		make ${NJOBS:--j}
+ 		cp -v $CPSOURCE $BINDIR/tensoradapter/pytorch
+ 		cd ..
+ 	done
