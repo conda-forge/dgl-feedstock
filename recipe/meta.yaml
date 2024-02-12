@@ -13,6 +13,7 @@ source:
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
       - control_make_parallelism.patch
+      - no_third_party_cccl.patch  # [(cuda_compiler_version or "").startswith("12")]
 
   - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
@@ -22,9 +23,9 @@ source:
     sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
     folder: third_party/libxsmm
 
-  - url: https://github.com/NVIDIA/cccl/archive/4d5c181cb4e67b14e7d1fdeb45cf0104119bfb09.tar.gz
-    sha256: 59bcccb6d7c054323fafb76ff0932c33ed9c3fac969c3eef2a521ad0980639fc
-    folder: third_party/cccl
+  - url: https://github.com/NVIDIA/cccl/archive/4d5c181cb4e67b14e7d1fdeb45cf0104119bfb09.tar.gz  # [(cuda_compiler_version or "").startswith("12")]
+    sha256: 59bcccb6d7c054323fafb76ff0932c33ed9c3fac969c3eef2a521ad0980639fc  # [(cuda_compiler_version or "").startswith("12")]
+    folder: third_party/cccl  # [(cuda_compiler_version or "").startswith("12")]
 
 build:
   skip: true  # [win or py<39]
@@ -115,7 +116,7 @@ about:
     - third_party/pcg/LICENSE-APACHE.txt
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
-    - third_party/cccl/LICENSE
+    - third_party/cccl/LICENSE   # [(cuda_compiler_version or "").startswith("12")]
     - HugeCTR_gpu_cache_license.txt
   summary: A deep graph library
   description: |
