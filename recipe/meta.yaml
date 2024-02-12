@@ -40,7 +40,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 0
+  number: 2
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
@@ -55,6 +55,12 @@ build:
 
 requirements:
   build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - cython <3                              # [build_platform != target_platform]
+    - pytorch                                # [build_platform != target_platform]
+    - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
+    - libtorch                               # [build_platform != target_platform]
     - cmake
     - git
     - libgomp      # [linux]
@@ -65,11 +71,18 @@ requirements:
     - {{ compiler('cuda') }}  # [cuda_compiler_version not in (undefined, 'None')]
     - {{ compiler('cxx') }}
   host:
+    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
     - cython <3
     - dlpack ==0.7
     - dmlc ==0.5
     - gklib ==5.1.1  # https://github.com/conda-forge/conda-forge-pinning-feedstock/pull/5396#issuecomment-1900607226
     - libblas
+    - libcublas-dev      # [(cuda_compiler_version or "").startswith("12")]
+    - libcufft-dev       # [(cuda_compiler_version or "").startswith("12")]
+    - libcurand-dev      # [(cuda_compiler_version or "").startswith("12")]
+    - libcusparse-dev    # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-nvrtc-dev     # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-nvtx-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcblas
     - liblapack
     - liblapacke

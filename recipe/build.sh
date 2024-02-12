@@ -5,10 +5,18 @@ rm -rf build || true
 
 
 if [ ${cuda_compiler_version} != "None" ]; then
-  CUDA_CMAKE_OPTIONS="-DCMAKE_CUDA_COMPILER=${CUDA_HOME}/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=${CXX} -DCUDA_ARCH_NAME=All "
+  CUDA_CMAKE_OPTIONS="-DCUDA_ARCH_NAME=All"
   USE_CUDA=ON
   # Remove -std=c++17 from CXXFLAGS for compatibility with nvcc
   CXXFLAGS="$(echo $CXXFLAGS | sed -e 's/ -std=[^ ]*//')"
+
+  # Add NVVM's `bin` directory to the `$PATH`.
+  # This should fix an error finding `cicc`.
+  # ref: https://forums.developer.nvidia.com/t/when-i-arch-option-error-sh-cicc-command-not-found-takes-place/31753/2
+  # xref: https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
+  if [[ "${cuda_compiler_version}" == 12* ]]; then
+    export PATH="${PATH}:${BUILD_PREFIX}/nvvm/bin"
+  fi
 else
   CUDA_CMAKE_OPTIONS=""
   USE_CUDA=OFF
@@ -26,7 +34,7 @@ else
 	USE_LIBXSMM=ON
 fi
 
-CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release -DPython_EXECUTABLE=${PYTHON}"
+CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release"
 if [[ ${cuda_compiler_version} != "None" ]]; then
     if [[ ${cuda_compiler_version} == 9.0* ]]; then
         export TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;7.0+PTX"
