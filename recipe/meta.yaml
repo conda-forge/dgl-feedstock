@@ -71,6 +71,7 @@ requirements:
     - libcurand-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcusolver-dev    # [(cuda_compiler_version or "").startswith("12")]
     - libcusparse-dev    # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cccl          # [(cuda_compiler_version or "").startswith("12")]
     - cuda-nvrtc-dev     # [(cuda_compiler_version or "").startswith("12")]
     - cuda-nvtx-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcblas
