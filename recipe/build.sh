@@ -47,6 +47,9 @@ if [ ${cuda_compiler_version} != "None" ]; then
   # xref: https://github.com/conda-forge/cuda-nvcc-impl-feedstock/issues/9
   if [[ "${cuda_compiler_version}" == 12* ]]; then
     export PATH="${PATH}:${BUILD_PREFIX}/nvvm/bin"
+    # Add more precedence to thrust, cub, libcudacxx include directories;
+    # otherwise, cuda-cccl's get used, which are older and incompatible with dgl usage.
+    CUDA_CMAKE_OPTIONS+=" -DCUDA_NVCC_FLAGS=-Xcompiler=-I${SRC_DIR}/third_party/cccl/thrust,-I${SRC_DIR}/third_party/cccl/cub,-I${SRC_DIR}/third_party/cccl/libcudacxx/include"
   fi
 else
   CUDA_CMAKE_OPTIONS=""
