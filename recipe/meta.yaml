@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "1.1.3" %}
+{% set version = "2.0.0" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,23 +8,11 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: c45021d77ff2b1fed814a8b91260671167fb4e42b7d5fab2d37faa74ae1dc5b4
+    sha256: a728fe7167da5ae5eb6ff9f455938c802acb1b477924eb6abb124aba61099a6c
     patches:
-      - conda-build.patch
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
-
-  - url: https://github.com/pytorch/tensorpipe/archive/6042f1a4cbce8eef997f11ed0012de137b317361.tar.gz
-    sha256: 50bd7ab968e5da9e42f92b429f530eaaadc4becc1b2756c905094711a0036a3b
-    folder: third_party/tensorpipe
-
-  - url: https://github.com/libuv/libuv/archive/1dff88e5161cba5c59276d2070d2e304e4dcb242.tar.gz
-    sha256: c66c8a024bb31c6134347a0d5630f6275c0bfe94d4144504d45099412fd7a054
-    folder: third_party/tensorpipe/third_party/libuv
-
-  - url: https://github.com/google/libnop/archive/910b55815be16109f04f4180e9adee14fb4ce281.tar.gz
-    sha256: ec3604671f8ea11aed9588825f9098057ebfef7a8908e97459835150eea9f63a
-    folder: third_party/tensorpipe/third_party/libnop
+      - control_make_parallelism.patch
 
   - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
@@ -40,7 +28,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 2
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
@@ -61,7 +49,7 @@ requirements:
     - pytorch                                # [build_platform != target_platform]
     - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
     - libtorch                               # [build_platform != target_platform]
-    - cmake
+    - cmake >=3.20
     - git
     - libgomp      # [linux]
     - llvm-openmp  # [osx]
@@ -72,6 +60,7 @@ requirements:
     - {{ compiler('cxx') }}
   host:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, 'None')]
+    - cudnn                                     # [cuda_compiler_version not in (undefined, 'None')]
     - cython <3
     - dlpack ==0.7
     - dmlc ==0.5
@@ -80,14 +69,15 @@ requirements:
     - libcublas-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcufft-dev       # [(cuda_compiler_version or "").startswith("12")]
     - libcurand-dev      # [(cuda_compiler_version or "").startswith("12")]
+    - libcusolver-dev    # [(cuda_compiler_version or "").startswith("12")]
     - libcusparse-dev    # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart-dev    # [(cuda_compiler_version or "").startswith("12")]
     - cuda-nvrtc-dev     # [(cuda_compiler_version or "").startswith("12")]
     - cuda-nvtx-dev      # [(cuda_compiler_version or "").startswith("12")]
     - libcblas
     - liblapack
     - liblapacke
-    - libuv
-    - metis ==5.1.1  # https://github.com/conda-forge/conda-forge-pinning-feedstock/pull/5396#issuecomment-1900607226
+    - metis ==5.1.1
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
@@ -96,15 +86,16 @@ requirements:
     - pytorch =*=*{{ torch_proc_type }}*
     - setuptools
   run:
-    - libuv
-    - networkx
-    - numpy
-    - psutil
+    - networkx >=2.1
+    - numpy >=1.14.0
+    - pandas  # not a core dependency, but leaks in the 'import dgl' test via dgl.data 
+    - psutil >=5.8.0
     - python
     - pytorch =*=*{{ torch_proc_type }}*
-    - requests
-    - scipy
+    - requests >=2.19.0
+    - scipy >=1.1.0
     - tensorflow
+    - torchdata >=0.5.0
     - tqdm
 
 test:
@@ -121,10 +112,6 @@ about:
   license: Apache-2.0
   license_file:
     - LICENSE
-    - third_party/tensorpipe/LICENSE.txt
-    - third_party/tensorpipe/third_party/libuv/LICENSE
-    - third_party/tensorpipe/third_party/libuv/LICENSE
-    - third_party/tensorpipe/third_party/libnop/LICENSE
     - third_party/pcg/LICENSE-APACHE.txt
     - third_party/pcg/LICENSE-MIT.txt
     - third_party/libxsmm/LICENSE.md
