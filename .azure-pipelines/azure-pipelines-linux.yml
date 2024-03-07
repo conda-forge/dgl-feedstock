@@ -60,35 +60,25 @@ jobs:
 
   steps:
   - script: |
-         set -x
-         echo "BEFORE"
-         df -h
-         sudo apt-get remove -y '^aspnetcore-.*' || true
-         sudo apt-get remove -y '^dotnet-.*' --fix-missing || true
-         sudo apt-get remove -y '^llvm-.*' --fix-missing || true
-         sudo apt-get remove -y 'php.*' --fix-missing || true
-         sudo apt-get remove -y '^mongodb-.*' --fix-missing || true
-         sudo apt-get remove -y '^mysql-.*' --fix-missing || true
-         sudo apt-get remove -y azure-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri --fix-missing || true
-         sudo apt-get remove -y google-cloud-sdk --fix-missing || true
-         sudo apt-get remove -y google-cloud-cli --fix-missing || true
-         sudo apt-get autoremove -y || true
-         sudo apt-get clean || true
          sudo mkdir -p /opt/empty_dir || true
          for d in \
-          /opt/ghc \
-          /opt/hostedtoolcache \
-          /usr/lib/jvm \
-          /usr/local/.ghcup \
-          /usr/local/lib/android \
-          /usr/local/share/powershell \
-          /usr/share/dotnet \
-          /usr/share/swift \
-         ; do
+                  /opt/ghc \
+                  /opt/hostedtoolcache \
+                  /usr/lib/jvm \
+                  /usr/local/.ghcup \
+                  /usr/local/lib/android \
+                  /usr/local/share/powershell \
+                  /usr/share/dotnet \
+                  /usr/share/swift \
+                  ; do
            sudo rsync --stats -a --delete /opt/empty_dir/ $d || true
          done
-         sudo docker image prune --all --force || true
-         echo "AFTER"
+         sudo apt-get purge -y -f firefox \
+                                  google-chrome-stable \
+                                  microsoft-edge-stable
+         sudo apt-get autoremove -y >& /dev/null
+         sudo apt-get autoclean -y >& /dev/null
+         sudo docker image prune --all --force
          df -h
     displayName: Manage disk space
   - script: |
