@@ -105,6 +105,7 @@ test:
   requires:
     - pip
     - pyyaml
+    - pydantic
   imports:
     - dgl
     - dgl.sparse
