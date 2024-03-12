@@ -83,6 +83,7 @@ requirements:
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
+    - pip
     - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*

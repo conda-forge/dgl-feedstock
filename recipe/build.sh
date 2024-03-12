@@ -93,4 +93,4 @@ cmake -DUSE_CUDA=${USE_CUDA} \
 
 make ${NJOBS} VERBOSE=1
 cd ../python
-${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
+${PYTHON} -m pip install . --no-deps -vv
