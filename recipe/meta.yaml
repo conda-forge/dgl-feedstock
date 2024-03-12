@@ -50,8 +50,6 @@ requirements:
     - pytorch                                # [build_platform != target_platform]
     - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
     - libtorch                               # [build_platform != target_platform]
-    - python
-    - pip
     - cmake >=3.20
     - git
     - libgomp      # [linux]
@@ -85,6 +83,7 @@ requirements:
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
+    - pip
     - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
