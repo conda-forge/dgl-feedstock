@@ -103,6 +103,7 @@ requirements:
 test:
   requires:
     - pip
+    - pyyaml
   imports:
     - dgl
     - dgl.sparse
