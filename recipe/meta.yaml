@@ -50,6 +50,7 @@ requirements:
     - pytorch                                # [build_platform != target_platform]
     - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
     - libtorch                               # [build_platform != target_platform]
+    - python
     - pip
     - cmake >=3.20
     - git
