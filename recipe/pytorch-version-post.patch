@@ -1,0 +1,25 @@
+From 313288a20e409a7731f10e299692548cb0c18d10 Mon Sep 17 00:00:00 2001
+From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
+Date: Wed, 13 Mar 2024 11:09:17 +0100
+Subject: [PATCH] Do not consider the build number in pytorch version
+
+---
+ python/dgl/graphbolt/__init__.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/python/dgl/graphbolt/__init__.py b/python/dgl/graphbolt/__init__.py
+index e9c09c97..91a5b7c4 100644
+--- a/python/dgl/graphbolt/__init__.py
++++ b/python/dgl/graphbolt/__init__.py
+@@ -28,7 +28,7 @@ from .utils import add_reverse_edges, add_reverse_edges_2, exclude_seed_edges
+ 
+ def load_graphbolt():
+     """Load Graphbolt C++ library"""
+-    vers = torch.__version__.split("+", maxsplit=1)[0]
++    vers = torch.__version__.split("+", maxsplit=1)[0].split(".post")[0]
+ 
+     if sys.platform.startswith("linux"):
+         basename = f"libgraphbolt_pytorch_{vers}.so"
+-- 
+2.43.0
+
