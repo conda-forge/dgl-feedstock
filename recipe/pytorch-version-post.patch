@@ -1,12 +1,24 @@
-From 313288a20e409a7731f10e299692548cb0c18d10 Mon Sep 17 00:00:00 2001
+From 291468da90cf777196bdc18b7f225c6f4d010911 Mon Sep 17 00:00:00 2001
 From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
 Date: Wed, 13 Mar 2024 11:09:17 +0100
-Subject: [PATCH] Do not consider the build number in pytorch version
+Subject: [PATCH] Don't add post version to graphbolt lib
 
 ---
+ graphbolt/find_cmake.py          | 2 +-
  python/dgl/graphbolt/__init__.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/graphbolt/find_cmake.py b/graphbolt/find_cmake.py
+index 570b7958..e5cf00aa 100644
+--- a/graphbolt/find_cmake.py
++++ b/graphbolt/find_cmake.py
+@@ -7,5 +7,5 @@ cmake_prefix_path = getattr(
+     "cmake_prefix_path",
+     os.path.join(os.path.dirname(torch.__file__), "share", "cmake"),
+ )
+-version = torch.__version__.split("+")[0]
++version = torch.__version__.split("+")[0].split(".post")[0]
+ print(";".join([cmake_prefix_path, version]))
 diff --git a/python/dgl/graphbolt/__init__.py b/python/dgl/graphbolt/__init__.py
 index e9c09c97..91a5b7c4 100644
 --- a/python/dgl/graphbolt/__init__.py
