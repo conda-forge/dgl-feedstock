@@ -293,4 +293,5 @@ Feedstock Maintainers
 * [@frozenbugs](https://github.com/frozenbugs/)
 * [@hmacdope](https://github.com/hmacdope/)
 * [@mikemhenry](https://github.com/mikemhenry/)
+* [@zklaus](https://github.com/zklaus/)
 
