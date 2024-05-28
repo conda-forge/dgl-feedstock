@@ -1,13 +1,18 @@
 azure:
-  free_disk_space: [docker, cache, apt]
+  free_disk_space:
+  - docker
+  - cache
+  - apt
   settings_linux:
     swapfile_size: 20GiB
-conda_build:
-  error_overlinking: true
 build_platform:
   osx_arm64: osx_64
+conda_build:
+  error_overlinking: true
 conda_forge_output_validation: true
 github:
   branch_name: main
   tooling_branch_name: main
+os_version:
+  linux_64: cos7
 test: native_and_emulated
