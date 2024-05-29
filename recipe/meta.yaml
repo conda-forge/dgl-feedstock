@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "2.0.0" %}
+{% set version = "2.1.0" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,11 +8,13 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: a728fe7167da5ae5eb6ff9f455938c802acb1b477924eb6abb124aba61099a6c
+    sha256: ad540fd93985d7242dc79db39b76c2a3ab1da5aceb06839fecc99edfb070fe81
     patches:
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
       - control_make_parallelism.patch
+      - use-system-liburing.patch  # [linux]
+      - pytorch-version-post.patch
 
   - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
@@ -28,7 +30,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 1
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
@@ -77,10 +79,12 @@ requirements:
     - libcblas
     - liblapack
     - liblapacke
+    - liburing  # [linux]
     - metis ==5.1.1
     - nanoflann <=1.4.2
     - parallel-hashmap
     - python
+    - pip
     - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
     - pytorch =*=*{{ torch_proc_type }}*
@@ -101,6 +105,8 @@ requirements:
 test:
   requires:
     - pip
+    - pyyaml
+    - pydantic
   imports:
     - dgl
     - dgl.sparse
@@ -131,3 +137,4 @@ extra:
     - frozenbugs
     - mikemhenry
     - hmacdope
+    - zklaus

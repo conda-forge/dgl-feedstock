@@ -1,0 +1,37 @@
+From 291468da90cf777196bdc18b7f225c6f4d010911 Mon Sep 17 00:00:00 2001
+From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
+Date: Wed, 13 Mar 2024 11:09:17 +0100
+Subject: [PATCH] Don't add post version to graphbolt lib
+
+---
+ graphbolt/find_cmake.py          | 2 +-
+ python/dgl/graphbolt/__init__.py | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/graphbolt/find_cmake.py b/graphbolt/find_cmake.py
+index 570b7958..e5cf00aa 100644
+--- a/graphbolt/find_cmake.py
++++ b/graphbolt/find_cmake.py
+@@ -7,5 +7,5 @@ cmake_prefix_path = getattr(
+     "cmake_prefix_path",
+     os.path.join(os.path.dirname(torch.__file__), "share", "cmake"),
+ )
+-version = torch.__version__.split("+")[0]
++version = torch.__version__.split("+")[0].split(".post")[0]
+ print(";".join([cmake_prefix_path, version]))
+diff --git a/python/dgl/graphbolt/__init__.py b/python/dgl/graphbolt/__init__.py
+index e9c09c97..91a5b7c4 100644
+--- a/python/dgl/graphbolt/__init__.py
++++ b/python/dgl/graphbolt/__init__.py
+@@ -28,7 +28,7 @@ from .utils import add_reverse_edges, add_reverse_edges_2, exclude_seed_edges
+ 
+ def load_graphbolt():
+     """Load Graphbolt C++ library"""
+-    vers = torch.__version__.split("+", maxsplit=1)[0]
++    vers = torch.__version__.split("+", maxsplit=1)[0].split(".post")[0]
+ 
+     if sys.platform.startswith("linux"):
+         basename = f"libgraphbolt_pytorch_{vers}.so"
+-- 
+2.43.0
+
