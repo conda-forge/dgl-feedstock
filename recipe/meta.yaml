@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "2.0.0" %}
+{% set version = "2.2.1" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: a728fe7167da5ae5eb6ff9f455938c802acb1b477924eb6abb124aba61099a6c
+    sha256: 481a46097fdf008f7e24d9a28f8bee0cb3c93e9d57392f05ee98b018f7250648
     patches:
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
@@ -28,7 +28,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 1
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
