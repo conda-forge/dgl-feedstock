@@ -101,6 +101,8 @@ requirements:
     - tensorflow
     - torchdata >=0.5.0
     - tqdm
+    - pyyaml
+    - pydantic
 
 test:
   requires:
