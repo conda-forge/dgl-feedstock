@@ -30,7 +30,7 @@ source:
 
 build:
   skip: true  # [win or py<39]
-  number: 0
+  number: 1
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
@@ -101,6 +101,8 @@ requirements:
     - tensorflow
     - torchdata >=0.5.0
     - tqdm
+    - pyyaml
+    - pydantic
 
 test:
   requires:
@@ -112,6 +114,7 @@ test:
     - dgl.sparse
   commands:
     - pip check || true  # Get the output of pip check but don't care if it fails
+    - python -c "import dgl"
 
 about:
   home: https://github.com/dmlc/dgl
