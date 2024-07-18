@@ -95,6 +95,7 @@ requirements:
     - pandas  # not a core dependency, but leaks in the 'import dgl' test via dgl.data 
     - psutil >=5.8.0
     - python
+    - {{ pin_compatible("pytorch", max_pin="x.x.x") }}  # ensure libgraphbolt compatibility
     - pytorch =*=*{{ torch_proc_type }}*
     - requests >=2.19.0
     - scipy >=1.1.0
