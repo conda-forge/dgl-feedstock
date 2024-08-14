@@ -1,50 +1,65 @@
-From e5b265a04ce5382a574938e6d33377a7fc1140be Mon Sep 17 00:00:00 2001
+From 094f174ee7b90582df7a49a32ad9d60889ed0577 Mon Sep 17 00:00:00 2001
 From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
 Date: Mon, 11 Mar 2024 18:34:33 +0100
-Subject: [PATCH] Use system liburing
+Subject: [PATCH 1/2] Use system liburing
 
 ---
- CMakeLists.txt           | 16 +---------------
- graphbolt/CMakeLists.txt |  1 -
- 2 files changed, 1 insertion(+), 16 deletions(-)
+ CMakeLists.txt           | 21 +--------------------
+ graphbolt/CMakeLists.txt |  4 +---
+ 2 files changed, 2 insertions(+), 23 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index d4b8830c..05526419 100644
+index a7f7fe39..5e6d292a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -350,21 +350,7 @@ target_include_directories(dgl PRIVATE "tensoradapter/include")
- target_include_directories(dgl PRIVATE "third_party/pcg/include")
+@@ -353,21 +353,7 @@ target_include_directories(dgl PRIVATE "third_party/pcg/include")
+ if(USE_LIBURING)
+   if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+     add_definitions(-DHAVE_LIBRARY_LIBURING)
+-    include(ExternalProject)
+-    set(LIBURING_INSTALL_DIR ${CMAKE_BINARY_DIR}/third_party/liburing)
+-    ExternalProject_Add(
+-      liburing
+-      SOURCE_DIR ${CMAKE_SOURCE_DIR}/third_party/liburing
+-      CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=/
+-      BUILD_COMMAND bash -c "make -j 4"
+-      BUILD_IN_SOURCE ON
+-      INSTALL_COMMAND make install DESTDIR=${LIBURING_INSTALL_DIR}
+-      BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/lib/liburing.a
+-      BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/include
+-      DOWNLOAD_EXTRACT_TIMESTAMP true
+-    )
+-    set(LIBURING_INCLUDE ${LIBURING_INSTALL_DIR}/include)
+-    set(LIBURING ${LIBURING_INSTALL_DIR}/lib/liburing.a)
++    set(LIBURING -luring)
+   endif()
+ endif(USE_LIBURING)
  
- if(CMAKE_SYSTEM_NAME MATCHES "Linux")
--  include(ExternalProject)
--  set(LIBURING_INSTALL_DIR ${CMAKE_BINARY_DIR}/third_party/liburing)
--  ExternalProject_Add(
--    liburing
--    SOURCE_DIR ${CMAKE_SOURCE_DIR}/third_party/liburing
--    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${LIBURING_INSTALL_DIR}
--    BUILD_COMMAND bash -c "make -j 4"
--    BUILD_IN_SOURCE ON
--    INSTALL_COMMAND make install DESTDIR=${LIBURING_INSTALL_DIR}
--    BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/lib/liburing.a
--    BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/include
--    DOWNLOAD_EXTRACT_TIMESTAMP true
--  )
--  set(LIBURING_INCLUDE ${LIBURING_INSTALL_DIR}/include)
--  set(LIBURING ${LIBURING_INSTALL_DIR}/lib/liburing.a)
-+  set(LIBURING -luring)
- endif()
- 
- if(EXTERNAL_NANOFLANN_PATH)
+@@ -592,9 +578,4 @@ if(BUILD_GRAPHBOLT)
+   if(USE_CUDA)
+     add_dependencies(graphbolt gpu_cache)
+   endif(USE_CUDA)
+-  if(USE_LIBURING)
+-    if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+-      add_dependencies(graphbolt liburing)
+-    endif()
+-  endif(USE_LIBURING)
+ endif(BUILD_GRAPHBOLT)
 diff --git a/graphbolt/CMakeLists.txt b/graphbolt/CMakeLists.txt
-index 1a37c7bb..1e288425 100644
+index af9c000b..bd6f563f 100644
 --- a/graphbolt/CMakeLists.txt
 +++ b/graphbolt/CMakeLists.txt
-@@ -92,5 +92,4 @@ if(DEFINED MKL_LIBRARIES)
-                           ${MKL_ROOT}/lib/${MKL_ARCH})
+@@ -77,9 +77,7 @@ include_directories(BEFORE ${BOLT_DIR}
+ target_link_libraries(${LIB_GRAPHBOLT_NAME} "${TORCH_LIBRARIES}")
+ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+   if(USE_LIBURING)
+-    target_include_directories(${LIB_GRAPHBOLT_NAME} PRIVATE "../third_party/liburing/src/include")
+-    get_filename_component(PARENT_DIR "${CMAKE_SOURCE_DIR}" DIRECTORY)
+-    target_link_libraries(${LIB_GRAPHBOLT_NAME} ${PARENT_DIR}/build/third_party/liburing/lib/liburing.a)
++    target_link_libraries(${LIB_GRAPHBOLT_NAME} ${LIBURING})
+   endif(USE_LIBURING)
  endif()
  
--target_include_directories(${LIB_GRAPHBOLT_NAME} PRIVATE ${LIBURING_INCLUDE})
- target_link_libraries(${LIB_GRAPHBOLT_NAME} ${LIBURING})
 -- 
 2.43.0
 
