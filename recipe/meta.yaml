@@ -16,17 +16,25 @@ source:
       - use-system-liburing.patch  # [linux]
       - pytorch-version-post.patch
 
+  - url: https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.tar.gz
+    sha256: 7ff5db23de232a39cbb5c9f5143c355885e30ac596161a6b9fc50c4538bfbf01
+    path: third_party/googletest
+
+  - url: https://github.com/hfp/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
+    sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
+    path: third_party/libxsmm
+
   - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
-    folder: third_party/pcg
+    path: third_party/pcg
 
-  - url: https://github.com/libxsmm/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
-    sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
-    folder: third_party/libxsmm
+  - url: https://github.com/NVIDIA/cccl/archive/1c009d23abf3e6c13d5e1f0ee54222c43b2c1785.tar.gz
+    sha256: ed9146ceea8fbe8e69577b049e03bd01031376988646c24fcd7ee60bcbd350ff
+    path: third_party/cccl
 
-  - url: https://github.com/NVIDIA/cccl/archive/4d5c181cb4e67b14e7d1fdeb45cf0104119bfb09.tar.gz
-    sha256: 59bcccb6d7c054323fafb76ff0932c33ed9c3fac969c3eef2a521ad0980639fc
-    folder: third_party/cccl
+  - url: https://github.com/NVIDIA/cuCollections/archive/2101cb31d0210b609cd02c88f9b538e10881d91d.tar.gz
+    sha256: 0e1b114dd7e8308b386ae38988d7b48d6fc86e46d05d8353a8e8a3a85b12752f
+    path: third_party/cuco
 
 build:
   skip: true  # [win or py<39]
