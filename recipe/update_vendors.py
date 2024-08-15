@@ -6,9 +6,9 @@ This script expects to be called from a clone of the upstream dgl repo
 with the desired commit checked out, usually the relevant version tag.
 """
 
+from hashlib import sha256
 from textwrap import dedent, indent
 from urllib.request import urlopen
-from hashlib import sha256
 
 from git import Repo
 
@@ -23,11 +23,11 @@ devendored_projects = [
     "METIS",
     "phmap",
     "nanoflann",
-    #"libxsmm",
-    #"pcg",
-    #"cccl",
+    # "libxsmm",
+    # "pcg",
+    # "cccl",
     "liburing",
-    #"cuco",
+    # "cuco",
 ]
 
 for sm in repo.submodules:
@@ -39,8 +39,13 @@ for sm in repo.submodules:
     with urlopen(url) as f:
         while chunk := f.read(5 * MB):
             m.update(chunk)
-    print(indent(dedent(f"""\
-          - url: {url}
-            sha256: {m.hexdigest()}
-            path: {sm.name}
-            """), "  "))
+    print(
+        indent(
+            dedent(f"""\
+                   - url: {url}
+                       sha256: {m.hexdigest()}
+                       path: {sm.name}
+                   """),
+            "  ",
+        )
+    )
