@@ -45,8 +45,8 @@ for sm in repo.submodules:
         indent(
             dedent(f"""\
                    - url: {url}
-                       sha256: {m.hexdigest()}
-                       path: {sm.name}
+                     sha256: {m.hexdigest()}
+                     folder: {sm.name}
                    """),
             "  ",
         )
