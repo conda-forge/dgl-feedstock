@@ -4,6 +4,8 @@
 
 This script expects to be called from a clone of the upstream dgl repo
 with the desired commit checked out, usually the relevant version tag.
+
+TODO: Add cloning and checkout of dgl repo.
 """
 
 from hashlib import sha256
