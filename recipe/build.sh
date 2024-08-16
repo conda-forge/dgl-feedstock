@@ -62,11 +62,16 @@ fi
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
 if [[ $(uname) == "Darwin" ]]; then
 	USE_LIBXSMM=OFF
+    USE_LIBURING=OFF
 	# https://conda-forge.org/docs/maintainer/knowledge_base.html#newer-c-features-with-old-sdk
 	# error: 'shared_mutex' is unavailable: introduced in macOS 10.1
 	CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
+elif [[ $(uname) == "Linux" ]]; then
+    USE_LIBXSMM=ON
+    USE_LIBURING=ON
 else
 	USE_LIBXSMM=ON
+    USE_LIBURING=OFF
 fi
 
 CMAKE_FLAGS="${CMAKE_ARGS} -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_BUILD_TYPE=Release"
@@ -85,6 +90,7 @@ cmake -DUSE_CUDA=${USE_CUDA} \
   -DEXTERNAL_METIS_PATH=${BUILD_PREFIX}/include \
   -DEXTERNAL_METIS_LIB_PATH=${BUILD_PREFIX}/lib \
   -DUSE_LIBXSMM=${USE_LIBXSMM} \
+  -DUSE_LIBURING=${USE_LIBURING} \
   -DUSE_OPENMP=ON \
   -DBUILD_TYPE=release \
   ${CMAKE_FLAGS} \
