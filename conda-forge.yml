@@ -5,6 +5,7 @@ azure:
   - apt
   settings_linux:
     swapfile_size: 20GiB
+    timeoutInMinutes: 420
 build_platform:
   osx_arm64: osx_64
 conda_build:
