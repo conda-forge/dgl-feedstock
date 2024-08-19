@@ -1,7 +1,7 @@
-From 291468da90cf777196bdc18b7f225c6f4d010911 Mon Sep 17 00:00:00 2001
+From c950c405ad03b05470bd59e30dac2f56ad00dd98 Mon Sep 17 00:00:00 2001
 From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
 Date: Wed, 13 Mar 2024 11:09:17 +0100
-Subject: [PATCH] Don't add post version to graphbolt lib
+Subject: [PATCH 2/2] Don't add post version to graphbolt lib
 
 ---
  graphbolt/find_cmake.py          | 2 +-
@@ -20,10 +20,10 @@ index 570b7958..e5cf00aa 100644
 +version = torch.__version__.split("+")[0].split(".post")[0]
  print(";".join([cmake_prefix_path, version]))
 diff --git a/python/dgl/graphbolt/__init__.py b/python/dgl/graphbolt/__init__.py
-index e9c09c97..91a5b7c4 100644
+index 2f53b2d3..f6c23a41 100644
 --- a/python/dgl/graphbolt/__init__.py
 +++ b/python/dgl/graphbolt/__init__.py
-@@ -28,7 +28,7 @@ from .utils import add_reverse_edges, add_reverse_edges_2, exclude_seed_edges
+@@ -9,7 +9,7 @@ from .._ffi import libinfo
  
  def load_graphbolt():
      """Load Graphbolt C++ library"""
