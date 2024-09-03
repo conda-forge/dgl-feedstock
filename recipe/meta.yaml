@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "2.2.1" %}
+{% set version = "2.3.0" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: 481a46097fdf008f7e24d9a28f8bee0cb3c93e9d57392f05ee98b018f7250648
+    sha256: 3896a87868907168883fdd361e7b550bb65484f80faa2bacd972ef46872757aa
     patches:
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
@@ -28,17 +28,17 @@ source:
     sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
     folder: third_party/pcg
 
-  - url: https://github.com/NVIDIA/cccl/archive/1c009d23abf3e6c13d5e1f0ee54222c43b2c1785.tar.gz
-    sha256: ed9146ceea8fbe8e69577b049e03bd01031376988646c24fcd7ee60bcbd350ff
+  - url: https://github.com/NVIDIA/cccl/archive/69be18c0232c9dddaae6c715aa9ed1b61bfb10be.tar.gz
+    sha256: 5982c4428359f846da377ccaefc4c463603a3f73425546215dbf28b5205e9dbf
     folder: third_party/cccl
 
-  - url: https://github.com/NVIDIA/cuCollections/archive/2101cb31d0210b609cd02c88f9b538e10881d91d.tar.gz
-    sha256: 0e1b114dd7e8308b386ae38988d7b48d6fc86e46d05d8353a8e8a3a85b12752f
+  - url: https://github.com/NVIDIA/cuCollections/archive/6c0d7ee190a167c6976af0f7c628a43d13b78f38.tar.gz
+    sha256: e80333f21aa1a046d35a60978cd4927c83fbf27d8d349d0dc58f8d4b19d7443c
     folder: third_party/cuco
 
 build:
   skip: true  # [win or py<39]
-  number: 2
+  number: 0
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
