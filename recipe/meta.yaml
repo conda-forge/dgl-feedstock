@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "2.3.0" %}
+{% set version = "2.4.0" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: 3896a87868907168883fdd361e7b550bb65484f80faa2bacd972ef46872757aa
+    sha256: 6372d0c804b52940f2a4d0f9b9d83c422ec5ef933907b2805da08b409f8ed26c
     patches:
       - fix_clang_errors.patch
       - fix_libdgl_sparse_pytorch_location_logic.patch
