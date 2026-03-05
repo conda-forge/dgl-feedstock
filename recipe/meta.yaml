@@ -14,7 +14,6 @@ source:
       - fix_libdgl_sparse_pytorch_location_logic.patch
       - control_make_parallelism.patch
       - use-system-liburing.patch  # [linux]
-      - pytorch-version-post.patch
 
   - url: https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.tar.gz
     sha256: 7ff5db23de232a39cbb5c9f5143c355885e30ac596161a6b9fc50c4538bfbf01
