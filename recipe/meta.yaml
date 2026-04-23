@@ -37,8 +37,8 @@ source:
     folder: third_party/cuco
 
 build:
-  skip: true  # [win or py<39]
-  number: 0
+  skip: true  # [win]
+  number: 1
   rpaths:
     - lib/
       # PyTorch libs are in site-packages instead of with other shared objects
@@ -57,7 +57,7 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - cython <3                              # [build_platform != target_platform]
     - pytorch                                # [build_platform != target_platform]
-    - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
+    - pytorch * *{{ torch_proc_type }}*      # [build_platform != target_platform]
     - libtorch                               # [build_platform != target_platform]
     - cmake >=3.20
     - git
@@ -95,7 +95,7 @@ requirements:
     - pip
     - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
-    - pytorch =*=*{{ torch_proc_type }}*
+    - pytorch * *{{ torch_proc_type }}*
     - setuptools
   run:
     - networkx >=2.1
@@ -104,7 +104,7 @@ requirements:
     - psutil >=5.8.0
     - python
     - {{ pin_compatible("pytorch", max_pin="x.x.x") }}  # ensure libgraphbolt compatibility
-    - pytorch =*=*{{ torch_proc_type }}*
+    - pytorch * *{{ torch_proc_type }}*
     - requests >=2.19.0
     - scipy >=1.1.0
     - tensorflow
