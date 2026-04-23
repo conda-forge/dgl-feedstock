@@ -5,7 +5,7 @@ MACOSX_SDK_VERSION:
 c_compiler:
 - clang
 c_compiler_version:
-- '16'
+- '18'
 c_stdlib:
 - macosx_deployment_target
 c_stdlib_version:
@@ -19,19 +19,19 @@ cuda_compiler_version:
 cxx_compiler:
 - clangxx
 cxx_compiler_version:
-- '16'
+- '18'
 libblas:
-- 3.9 *netlib
+- 3.9.* *netlib
 libcblas:
-- 3.9 *netlib
+- 3.9.* *netlib
 liblapack:
-- 3.9 *netlib
+- 3.9.* *netlib
 liblapacke:
-- 3.9 *netlib
+- 3.9.* *netlib
 libtorch:
-- '2.3'
+- '2.6'
 llvm_openmp:
-- '16'
+- '18'
 macos_machine:
 - arm64-apple-darwin20.0.0
 pin_run_as_build:
@@ -41,7 +41,7 @@ pin_run_as_build:
 python:
 - 3.9.* *_cpython
 pytorch:
-- '2.3'
+- '2.6'
 target_platform:
 - osx-arm64
 zip_keys:
