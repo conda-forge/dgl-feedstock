@@ -1,0 +1,45 @@
+From 81bff76287c4c079010a36744a22c30fa15a1c8e Mon Sep 17 00:00:00 2001
+From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
+Date: Mon, 11 Mar 2024 18:34:33 +0100
+Subject: [PATCH 4/6] Use system liburing
+
+---
+ graphbolt/CMakeLists.txt | 25 ++-----------------------
+ 1 file changed, 2 insertions(+), 23 deletions(-)
+
+diff --git a/graphbolt/CMakeLists.txt b/graphbolt/CMakeLists.txt
+index 8fdcbd50..821144e3 100644
+--- a/graphbolt/CMakeLists.txt
++++ b/graphbolt/CMakeLists.txt
+@@ -96,29 +96,8 @@ endif(USE_OPENMP)
+ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+   if(USE_LIBURING)
+     add_definitions(-DHAVE_LIBRARY_LIBURING)
+-    include(ExternalProject)
+-    set(LIBURING_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party/liburing)
+-    set(LIBURING_C_COMPILER "${CMAKE_C_COMPILER} -w")
+-    ExternalProject_Add(
+-      liburing
+-      SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/liburing
+-      CONFIGURE_COMMAND <SOURCE_DIR>/configure --cc=${LIBURING_C_COMPILER} --cxx=${CMAKE_CXX_COMPILER} --prefix=/
+-      # In order to avoid the error `error: redefinition of 'struct in6_pktinfo'` on ubi7
+-      # when building examples, let's build src only.
+-      BUILD_COMMAND bash -c "make -j 4 -C src/"
+-      BUILD_IN_SOURCE ON
+-      INSTALL_COMMAND make install DESTDIR=${LIBURING_INSTALL_DIR}
+-      BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/lib/liburing.a
+-      BUILD_BYPRODUCTS ${LIBURING_INSTALL_DIR}/include
+-      DOWNLOAD_EXTRACT_TIMESTAMP true
+-    )
+-    set(LIBURING_INCLUDE ${LIBURING_INSTALL_DIR}/include)
+-    set(LIBURING ${LIBURING_INSTALL_DIR}/lib/liburing.a)
+-
+-    target_include_directories(${LIB_GRAPHBOLT_NAME} PRIVATE ${LIBURING_INCLUDE})
+-    add_dependencies(${LIB_GRAPHBOLT_NAME} liburing)
+-    target_link_libraries(${LIB_GRAPHBOLT_NAME} ${CMAKE_CURRENT_BINARY_DIR}/third_party/liburing/lib/liburing.a)
+-    message(STATUS "Build graphbolt with liburing.")
++    set(LIBURING -luring)
++    target_link_libraries(${LIB_GRAPHBOLT_NAME} ${LIBURING})
+   endif(USE_LIBURING)
+ endif()
+ 

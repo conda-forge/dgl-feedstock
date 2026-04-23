@@ -1,0 +1,43 @@
+From e7648b657760619464f61b124111a51714b6ae12 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Wed, 12 Feb 2025 13:21:26 +1100
+Subject: [PATCH 6/6] use our own tsl_robin_map
+
+---
+ CMakeLists.txt           | 2 --
+ graphbolt/CMakeLists.txt | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ce6b348c..7e3d7b59 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -320,7 +320,6 @@ endif(EXTERNAL_DMLC_PATH)
+ 
+ target_include_directories(dgl PRIVATE "tensoradapter/include")
+ target_include_directories(dgl PRIVATE "third_party/pcg/include")
+-target_include_directories(dgl PRIVATE "third_party/tsl_robin_map/include")
+ 
+ if(EXTERNAL_NANOFLANN_PATH)
+   include_directories(SYSTEM ${EXTERNAL_NANOFLANN_PATH})
+@@ -451,7 +450,6 @@ if(BUILD_CPP_TEST)
+   include_directories("include")
+   include_directories("third_party/dlpack/include")
+   include_directories("third_party/dmlc-core/include")
+-  include_directories("third_party/tsl_robin_map/include")
+   include_directories("third_party/libxsmm/include")
+   include_directories("third_party/pcg/include")
+   file(GLOB_RECURSE TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/tests/cpp/*.cc)
+diff --git a/graphbolt/CMakeLists.txt b/graphbolt/CMakeLists.txt
+index 821144e3..de801aff 100644
+--- a/graphbolt/CMakeLists.txt
++++ b/graphbolt/CMakeLists.txt
+@@ -80,7 +80,7 @@ include_directories(BEFORE ${BOLT_DIR}
+                            # `std::atomic_ref`, `std::counting_semaphore`
+                            "../third_party/cccl/libcudacxx/include"
+                            "../third_party/pcg/include"
+-                           "../third_party/tsl_robin_map/include")
++                    )
+ target_link_libraries(${LIB_GRAPHBOLT_NAME} "${TORCH_LIBRARIES}")
+ if(BUILD_WITH_TASKFLOW)
+   target_include_directories(${LIB_GRAPHBOLT_NAME} PRIVATE "../third_party/taskflow")

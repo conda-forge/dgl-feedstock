@@ -1,0 +1,22 @@
+From d595ebf563c524643ff746a6654c75d640a8c397 Mon Sep 17 00:00:00 2001
+From: Mike Henry <11765982+mikemhenry@users.noreply.github.com>
+Date: Fri, 11 Aug 2023 11:30:06 -0700
+Subject: [PATCH 1/6] fix clang errors
+
+---
+ include/dgl/runtime/parallel_for.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/dgl/runtime/parallel_for.h b/include/dgl/runtime/parallel_for.h
+index 85143de8..d4e9c391 100644
+--- a/include/dgl/runtime/parallel_for.h
++++ b/include/dgl/runtime/parallel_for.h
+@@ -85,7 +85,7 @@ void parallel_for(
+     auto chunk_size = divup((end - begin), num_threads);
+     auto begin_tid = begin + tid * chunk_size;
+     if (begin_tid < end) {
+-      auto end_tid = std::min(end, chunk_size + begin_tid);
++      auto end_tid = std::min(end, static_cast<size_t>(chunk_size + begin_tid));
+       try {
+         f(begin_tid, end_tid);
+       } catch (...) {

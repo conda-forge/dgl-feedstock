@@ -33,6 +33,9 @@ if [ ${cuda_compiler_version} != "None" ]; then
   elif [[ ${cuda_compiler_version} == 12.0 ]]; then
       export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
       export CUDAARCHS="50;60;61;70;75;80;86;89;90"
+  elif [[ ${cuda_compiler_version} == 12.6 ]]; then
+      export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"
+      export CUDAARCHS="50;60;61;70;75;80;86;89;90"
   else
       echo "unsupported cuda version. edit build.sh"
       exit 1
@@ -50,6 +53,10 @@ if [ ${cuda_compiler_version} != "None" ]; then
     # Add more precedence to thrust, cub, libcudacxx include directories;
     # otherwise, cuda-cccl's get used, which are older and incompatible with dgl usage.
     CUDA_CMAKE_OPTIONS+=" -DCUDA_NVCC_FLAGS=-Xcompiler=-I${SRC_DIR}/third_party/cccl/thrust,-I${SRC_DIR}/third_party/cccl/cub,-I${SRC_DIR}/third_party/cccl/libcudacxx/include"
+    export CUDA_TOOLKIT_ROOT_DIR=${PREFIX}
+    CMAKE_ARGS="${CMAKE_ARGS} -DNvToolExt_SEARCH_DIRS=${CUDA_TOOLKIT_ROOT_DIR}/include/nvtx3"
+    CMAKE_ARGS="${CMAKE_ARGS} -DNvToolExt_INCLUDE_DIR=${CUDA_TOOLKIT_ROOT_DIR}/include/nvtx3"
+    CMAKE_ARGS="${CMAKE_ARGS} -DNvToolExt_LIBRARIES=${CUDA_TOOLKIT_ROOT_DIR}/lib/libnvToolsExt.so"
   fi
 else
   CUDA_CMAKE_OPTIONS=""
@@ -61,16 +68,16 @@ fi
 
 # SEE PR #5 (can't build to do aligned_alloc missing on osx)
 if [[ $(uname) == "Darwin" ]]; then
-	USE_LIBXSMM=OFF
+    USE_LIBXSMM=OFF
     USE_LIBURING=OFF
-	# https://conda-forge.org/docs/maintainer/knowledge_base.html#newer-c-features-with-old-sdk
-	# error: 'shared_mutex' is unavailable: introduced in macOS 10.1
-	CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
+    # https://conda-forge.org/docs/maintainer/knowledge_base.html#newer-c-features-with-old-sdk
+    # error: 'shared_mutex' is unavailable: introduced in macOS 10.1
+    CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
 elif [[ $(uname) == "Linux" ]]; then
     USE_LIBXSMM=ON
     USE_LIBURING=ON
 else
-	USE_LIBXSMM=ON
+    USE_LIBXSMM=ON
     USE_LIBURING=OFF
 fi
 

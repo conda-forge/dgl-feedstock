@@ -1,0 +1,100 @@
+From 66c475cca1f2fdf434365aa64212e7e2c4201756 Mon Sep 17 00:00:00 2001
+From: Klaus Zimmermann <klaus.zimmermann@quansight.com>
+Date: Wed, 13 Mar 2024 11:09:17 +0100
+Subject: [PATCH 5/6] Don't add post version to graphbolt lib
+
+---
+ dgl_sparse/build.sh                 | 2 +-
+ dgl_sparse/find_cmake.py            | 2 +-
+ graphbolt/build.sh                  | 2 +-
+ graphbolt/find_cmake.py             | 2 +-
+ python/dgl/graphbolt/__init__.py    | 2 +-
+ tensoradapter/pytorch/build.sh      | 2 +-
+ tensoradapter/pytorch/find_cmake.py | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/dgl_sparse/build.sh b/dgl_sparse/build.sh
+index e4b8b80d..4bea1a52 100644
+--- a/dgl_sparse/build.sh
++++ b/dgl_sparse/build.sh
+@@ -23,7 +23,7 @@ if [ $# -eq 0 ]; then
+ 	cp -v $CPSOURCE $BINDIR/dgl_sparse
+ else
+ 	for PYTHON_INTERP in $@; do
+-		TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0])')
++		TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0].split(".post")[0])')
+ 		mkdir -p $TORCH_VER
+ 		cd $TORCH_VER
+ 		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+diff --git a/dgl_sparse/find_cmake.py b/dgl_sparse/find_cmake.py
+index 570b7958..e5cf00aa 100644
+--- a/dgl_sparse/find_cmake.py
++++ b/dgl_sparse/find_cmake.py
+@@ -7,5 +7,5 @@ cmake_prefix_path = getattr(
+     "cmake_prefix_path",
+     os.path.join(os.path.dirname(torch.__file__), "share", "cmake"),
+ )
+-version = torch.__version__.split("+")[0]
++version = torch.__version__.split("+")[0].split(".post")[0]
+ print(";".join([cmake_prefix_path, version]))
+diff --git a/graphbolt/build.sh b/graphbolt/build.sh
+index 65299901..2e1dbd26 100755
+--- a/graphbolt/build.sh
++++ b/graphbolt/build.sh
+@@ -37,7 +37,7 @@ if [ $# -eq 0 ]; then
+   cp -v $CPSOURCE $BINDIR/graphbolt
+ else
+   for PYTHON_INTERP in $@; do
+-    TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0])')
++    TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0].split(".post")[0])')
+     mkdir -p $TORCH_VER
+     cd $TORCH_VER
+     $CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+diff --git a/graphbolt/find_cmake.py b/graphbolt/find_cmake.py
+index 570b7958..e5cf00aa 100644
+--- a/graphbolt/find_cmake.py
++++ b/graphbolt/find_cmake.py
+@@ -7,5 +7,5 @@ cmake_prefix_path = getattr(
+     "cmake_prefix_path",
+     os.path.join(os.path.dirname(torch.__file__), "share", "cmake"),
+ )
+-version = torch.__version__.split("+")[0]
++version = torch.__version__.split("+")[0].split(".post")[0]
+ print(";".join([cmake_prefix_path, version]))
+diff --git a/python/dgl/graphbolt/__init__.py b/python/dgl/graphbolt/__init__.py
+index 006b91d3..04eb2abf 100644
+--- a/python/dgl/graphbolt/__init__.py
++++ b/python/dgl/graphbolt/__init__.py
+@@ -49,7 +49,7 @@ from .._ffi import libinfo
+ 
+ def load_graphbolt():
+     """Load Graphbolt C++ library"""
+-    vers = torch.__version__.split("+", maxsplit=1)[0]
++    vers = torch.__version__.split("+", maxsplit=1)[0].split(".post")[0]
+ 
+     if sys.platform.startswith("linux"):
+         basename = f"libgraphbolt_pytorch_{vers}.so"
+diff --git a/tensoradapter/pytorch/build.sh b/tensoradapter/pytorch/build.sh
+index 198dd6ae..895a27ec 100644
+--- a/tensoradapter/pytorch/build.sh
++++ b/tensoradapter/pytorch/build.sh
+@@ -20,7 +20,7 @@ if [ $# -eq 0 ]; then
+ 	cp -v $CPSOURCE $BINDIR/tensoradapter/pytorch
+ else
+ 	for PYTHON_INTERP in $@; do
+-		TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0])')
++		TORCH_VER=$($PYTHON_INTERP -c 'import torch; print(torch.__version__.split("+")[0].split(".post")[0])')
+ 		mkdir -p $TORCH_VER
+ 		cd $TORCH_VER
+ 		$CMAKE_COMMAND $CMAKE_FLAGS -DPYTHON_INTERP=$PYTHON_INTERP ../..
+diff --git a/tensoradapter/pytorch/find_cmake.py b/tensoradapter/pytorch/find_cmake.py
+index 570b7958..e5cf00aa 100644
+--- a/tensoradapter/pytorch/find_cmake.py
++++ b/tensoradapter/pytorch/find_cmake.py
+@@ -7,5 +7,5 @@ cmake_prefix_path = getattr(
+     "cmake_prefix_path",
+     os.path.join(os.path.dirname(torch.__file__), "share", "cmake"),
+ )
+-version = torch.__version__.split("+")[0]
++version = torch.__version__.split("+")[0].split(".post")[0]
+ print(";".join([cmake_prefix_path, version]))

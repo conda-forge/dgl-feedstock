@@ -1,5 +1,5 @@
 {% set name = "dgl" %}
-{% set version = "2.3.0" %}
+{% set version = "2.4.0" %}
 {% set torch_proc_type = "cuda" if cuda_compiler_version != "None" else "cpu" %}
 
 package:
@@ -8,36 +8,43 @@ package:
 
 source:
   - url: https://github.com/dmlc/dgl/archive/v{{ version }}.tar.gz
-    sha256: 3896a87868907168883fdd361e7b550bb65484f80faa2bacd972ef46872757aa
+    sha256: 6372d0c804b52940f2a4d0f9b9d83c422ec5ef933907b2805da08b409f8ed26c
     patches:
-      - fix_clang_errors.patch
-      - fix_libdgl_sparse_pytorch_location_logic.patch
-      - control_make_parallelism.patch
-      - use-system-liburing.patch  # [linux]
-      - pytorch-version-post.patch
+      - patches/0001-fix-clang-errors.patch
+      - patches/0002-fix-libdgl-sparse-pytorch-location-logic.patch
+      - patches/0003-control-make-parallelism.patch
+      - patches/0004-Use-system-liburing.patch                          # [linux]
+      - patches/0005-Don-t-add-post-version-to-graphbolt-lib.patch
+      - patches/0006-use-our-own-tsl_robin_map.patch
 
-  - url: https://github.com/google/googletest/archive/f8d7d77c06936315286eb55f8de22cd23c188571.tar.gz
-    sha256: 7ff5db23de232a39cbb5c9f5143c355885e30ac596161a6b9fc50c4538bfbf01
-    folder: third_party/googletest
+  - folder: third_party/cccl
+    git_url: https://github.com/NVIDIA/cccl.git
+    git_rev: c67b1c3257be5115253f06d45a2d607b54234db4
 
-  - url: https://github.com/hfp/libxsmm/archive/80090603e43f6ddc870cc42e1403dd0af07744cc.tar.gz
-    sha256: 5ee733ccbfe8b79f61e4ea87e5defbbaf51f80a851eb3cf00a0946e4d230d999
-    folder: third_party/libxsmm
+  - folder: third_party/cuco
+    git_url: https://github.com/NVIDIA/cuCollections.git
+    git_rev: 6c0d7ee190a167c6976af0f7c628a43d13b78f38
 
-  - url: https://github.com/imneme/pcg-cpp/archive/428802d1a5634f96bcd0705fab379ff0113bcf13.tar.gz
-    sha256: 79f23706ed0cbc1bb57ea35d50d0abed66898b8f7b0bcf2aaecdfd234863b060
-    folder: third_party/pcg
+  - folder: third_party/googletest
+    git_url: https://github.com/google/googletest.git
+    git_rev: f8d7d77c06936315286eb55f8de22cd23c188571
 
-  - url: https://github.com/NVIDIA/cccl/archive/69be18c0232c9dddaae6c715aa9ed1b61bfb10be.tar.gz
-    sha256: 5982c4428359f846da377ccaefc4c463603a3f73425546215dbf28b5205e9dbf
-    folder: third_party/cccl
+  - folder: third_party/libxsmm
+    git_url: https://github.com/libxsmm/libxsmm.git
+    git_rev: 80090603e43f6ddc870cc42e1403dd0af07744cc
 
-  - url: https://github.com/NVIDIA/cuCollections/archive/6c0d7ee190a167c6976af0f7c628a43d13b78f38.tar.gz
-    sha256: e80333f21aa1a046d35a60978cd4927c83fbf27d8d349d0dc58f8d4b19d7443c
-    folder: third_party/cuco
+  - folder: third_party/pcg
+    git_url: https://github.com/imneme/pcg-cpp.git
+    git_rev: 428802d1a5634f96bcd0705fab379ff0113bcf13
+
+  - folder: third_party/taskflow
+    git_url: https://github.com/taskflow/taskflow.git
+    git_rev: 7d9e85b6b2e9bf501021f857f2f3cbe43bc37c85
 
 build:
-  skip: true  # [win or py<39]
+  skip: true  # [win]
+  # pytorch 2.5 builds in conda-forge do not support CUDA 11.8 anymore
+  skip: true  # [cuda_compiler_version == "11.8"]
   number: 0
   rpaths:
     - lib/
@@ -48,8 +55,10 @@ build:
   missing_dso_whitelist:
     - '*/libcuda.*'  # [linux64]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
-  ignore_run_exports:
+  ignore_run_exports_from:
     - gklib
+    # see comment below
+    - libprotobuf
 
 requirements:
   build:
@@ -57,10 +66,11 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - cython <3                              # [build_platform != target_platform]
     - pytorch                                # [build_platform != target_platform]
-    - pytorch =*=*{{ torch_proc_type }}*     # [build_platform != target_platform]
+    - pytorch * *{{ torch_proc_type }}*      # [build_platform != target_platform]
     - libtorch                               # [build_platform != target_platform]
     - cmake >=3.20
     - git
+    - git-lfs
     - libgomp      # [linux]
     - llvm-openmp  # [osx]
     - make
@@ -87,15 +97,18 @@ requirements:
     - libcblas
     - liblapack
     - liblapacke
+    # ensure https://github.com/conda-forge/pytorch-cpu-feedstock/pull/382 or newer gets pulled in
+    - libprotobuf >=5.29
     - liburing  # [linux]
     - metis ==5.1.1
     - nanoflann <=1.4.2
     - parallel-hashmap
+    - tsl_robin_map
     - python
     - pip
     - libtorch
     - pytorch  # duplicate dep to pick up conda-forge pinnings
-    - pytorch =*=*{{ torch_proc_type }}*
+    - pytorch * *{{ torch_proc_type }}*
     - setuptools
   run:
     - networkx >=2.1
@@ -104,7 +117,7 @@ requirements:
     - psutil >=5.8.0
     - python
     - {{ pin_compatible("pytorch", max_pin="x.x.x") }}  # ensure libgraphbolt compatibility
-    - pytorch =*=*{{ torch_proc_type }}*
+    - pytorch * *{{ torch_proc_type }}*
     - requests >=2.19.0
     - scipy >=1.1.0
     - tensorflow
